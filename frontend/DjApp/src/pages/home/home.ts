@@ -62,6 +62,10 @@ private getBoliche() {
       });
 }
   
+
+myFunction(){
+  console.log('HOLA ENTRE A myfunction');
+}
   
   
 }
