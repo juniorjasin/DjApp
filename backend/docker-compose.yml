@@ -1,6 +1,19 @@
 version: "2.0"
 services:
 
+    gps-svc:
+        build: gps-svc
+        ports:
+            - 6061:6061        
+        depends_on:
+            - my_sql
+        environment:
+            MYSQL_ENDPOINT: mysql
+            MYSQL_USER: dev
+            MYSQL_PASSWORD: changeme
+            MYSQL_DATABASE: djapp
+            PYTHONUNBUFFERED: 0  # agrego esto para ver los prints de python en la terminal                    
+
     svc-temas:
         build: svc-temas
         ports:

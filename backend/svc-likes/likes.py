@@ -53,7 +53,7 @@ def init_db():
     try:
         cnx = pymysql.connect(**mysql_config)
         cursor = cnx.cursor()
-        cursor.execute("create table if not exists djapp.boliches (id_boliche integer, nombre varchar(100), latitud float, longitud float)")
+        cursor.execute("create table if not exists djapp.boliches (id_boliche integer, nombre varchar(100), latitud varchar(100), longitud varchar(100))")
         cursor.execute(create_table)
         create_table = "create table if not exists djapp.votos_tema_actual (id_tema integer REFERENCES djapp.temas(id_tema), id_boliche integer REFERENCES djapp.boliches(id_boliche), tipo_voto varchar(3) CHECK (tipo_voto IN ('mg','nmg')), fecha_hora datetime, PRIMARY KEY (id_tema, id_boliche))"
         cursor.execute(create_table)
