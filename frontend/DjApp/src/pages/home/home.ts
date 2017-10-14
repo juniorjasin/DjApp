@@ -6,6 +6,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
+import { SuggestPage } from '../suggest/suggest';
 
 @Component({
   selector: 'page-home',
@@ -61,14 +62,28 @@ private getBoliche() {
 }
   
 
-meGusta(){
-  console.log('me gusta lo que suena ;)');
-}
+private sendvot(id_tema,vot){
+  this.navCtrl.push(SuggestPage);
+  console.log("entro papaaa", id_tema);
+  console.log("entro papaaa", vot);
+/*
+  let path = "http://localhost:8081/sendvot?lat=" + this.lat + "&lon=" + this.lon + "&id_tema=" + id_tema + "&estado=" + vot; // cambiar url 
+  console.log(path);
+  
+  let encodedPath = encodeURI(path);
+  let timeoutMS = 10000;
+  this.http.get(encodedPath)
+      .timeout(timeoutMS)
+      .map(res => res.json()).subscribe(data => {
+          let responseData = data;
+          console.log(responseData);
+          //this.navCtrl.push(SuggestPage);
+      },
+      err => {
+          console.log('error in send voto');
+      });*/
 
-noMeGusta(){
-  console.log('ya cambiale marge');
 }
-
   
 }
 
