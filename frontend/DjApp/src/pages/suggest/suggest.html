@@ -8,10 +8,16 @@
   <br>
 <ion-content padding class="app">
  
-<ion-list>
+<!-- <ion-list>
   <ion-item *ngFor="let item of items" (tap)="doSomething(this.item)" >
     <h2> {{ item }}</h2>
   </ion-item>
+</ion-list> -->
+
+<ion-list no-lines>
+  <button ion-item *ngFor="let item of items" (tap)="doSomething(this.item)">
+    {{ item }}
+  </button> 
 </ion-list>
 
 
