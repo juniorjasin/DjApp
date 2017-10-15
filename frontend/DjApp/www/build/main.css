@@ -25513,5 +25513,23 @@ ion-navbar.toolbar {
 }
 
 page-home .app {
-  background-color: #282828;
+  background: -webkit-gradient(linear, left top, left bottom, from(black), color-stop(#1C201D), to(#5C645A));
+  background: linear-gradient(black, #1C201D, #5C645A);
+}
+
+page-home p {
+  color: white;
+  text-align: center;
+  font-size: 25px;
+}
+
+page-suggest .app {
+  background: -webkit-gradient(linear, left top, left bottom, from(black), color-stop(#1C201D), to(#5C645A));
+  background: linear-gradient(black, #1C201D, #5C645A);
+}
+
+page-suggest p {
+  color: white;
+  text-align: center;
+  font-size: 25px;
 }

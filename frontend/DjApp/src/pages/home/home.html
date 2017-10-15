@@ -1,21 +1,17 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-navbar>
-</ion-header>
-
-<ion-content padding class="app">
+<ion-header> </ion-header>
+  <ion-content class="app" padding>
+      <p> ¿ Te gusta lo que suena ?</p>
+      <br>
+      <br>
+      <br>
+      <p> 4 Babys - Maluma </p>
+      <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div>
+      <br>
+      <br>
+      <br>
+      <br>
   
-  
-      <h2 align="middle" style="color:white" >Te gusta lo que suena?</h2>
+      <img src="images/x2.png" align="left" style="position: relative; width:30%" (tap)="sendvot('485','nomg')">
+      <img src="images/cuoreg.png" align="right" style="position: relative; width:35%" (tap)="sendvot('485','mg')">
     
-      <img src="images/DannyOcean-MeRehuso.jpg" align="middle" style="position: relative; width:100%">
-      <h4 align="middle" style="color:white"> Danny Ocean - Me Rehuso</h4>
-    
-      <img src="images/heart.png" align="right" style="position: relative; width:30%" (click)="meGusta()">
-      <img src="images/cross.png" align="left" style="position: relative; width:30%" (click)="noMeGusta()">
-  
-  
-</ion-content>
+  </ion-content>

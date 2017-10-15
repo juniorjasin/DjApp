@@ -1,0 +1,30 @@
+<ion-header> 
+  <br>
+  <p> ¡ Gracias por votar !</p>
+  <p> Sugiere al DJ lo que quieres escuchar </p>
+  <br>
+  <ion-searchbar placeholder="Buscar" ></ion-searchbar> 
+</ion-header>
+  <br>
+<ion-content padding class="app">
+ 
+<!-- <ion-list>
+  <ion-item *ngFor="let item of items" (tap)="doSomething(this.item)" >
+    <h2> {{ item }}</h2>
+  </ion-item>
+</ion-list> -->
+
+<ion-list no-lines>
+  <button ion-item *ngFor="let item of items" (tap)="doSomething(this.item)">
+    {{ item }}
+  </button> 
+</ion-list>
+
+
+
+</ion-content>
+
+
+<!-- <ion-footer>
+  <button aling="center" ion-button color="blue" (tap)="showAlert()" round>SEND SUGGESTION</button>
+</ion-footer> -->

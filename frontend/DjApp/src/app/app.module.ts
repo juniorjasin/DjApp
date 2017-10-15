@@ -7,14 +7,18 @@ import { MyApp } from './app.component';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { HomePage } from '../pages/home/home';
+import { SuggestPage } from '../pages/suggest/suggest';
 
 import { Geolocation } from '@ionic-native/geolocation';
 import { HttpModule } from '@angular/http';
+import { AlertController } from 'ionic-angular';
+
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    SuggestPage
   ],
   imports: [
     BrowserModule,
@@ -24,7 +28,8 @@ import { HttpModule } from '@angular/http';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    SuggestPage
   ],
   providers: [
     StatusBar,
