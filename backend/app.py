@@ -1,9 +1,10 @@
-from bottle import Bottle, route, run, template, get, post, request
+from bottle import Bottle, route, run, template, get, post, request,response
 import sys
 import json
 
 from handlers import boliches
 from handlers import tema_actual
+from handlers import likes
 app = Bottle()
 
 
@@ -20,12 +21,14 @@ app = Bottle()
 def insertar_boliche():        
     a = boliches.BolichesHandler(request)
     res = a.post()
+    response.headers['Content-Type'] = 'application/json'
     return json.dumps(res)
 
 @app.route('/boliches', method="GET")
 def consultar_boliches():
     a = boliches.BolichesHandler(request)
     b = a.get()
+    response.headers['Content-Type'] = 'application/json'
     return json.dumps(b)
 
 
@@ -34,6 +37,7 @@ def consultar_boliches():
 def consultar_tema_actual(id_boliche):
     a = tema_actual.TemaActualHandler(request)
     b = a.get(id_boliche)
+    response.headers['Content-Type'] = 'application/json'
     return json.dumps(b)
 
 
@@ -41,7 +45,18 @@ def consultar_tema_actual(id_boliche):
 def insertar_actual(id_boliche):        
     a = tema_actual.TemaActualHandler(request)
     res = a.post(id_boliche)
+    response.headers['Content-Type'] = 'application/json'
     return json.dumps(res)
+
+
+#API 8 
+@app.route('/likes', method="POST")
+def insertar_actual():        
+    a = likes.LikesHandler(request)
+    res = a.post()
+    response.headers['Content-Type'] = 'application/json'
+    return json.dumps(res)
+
 
 
 run(app, host='127.0.0.1', port=9090)

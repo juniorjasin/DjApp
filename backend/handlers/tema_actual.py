@@ -20,25 +20,24 @@ class TemaActualHandler:
         response = {}
 
         print boliches
-        print boliches.has_key('id')
+        print type(boliches)
+        # print boliches.has_key('id')
 
 
-        if boliches.has_key('id'):
-            print "has id"
-            id_bol = boliches['id']
-            print "id_bol {}".format(id_bol)
-            print "id_boliche {}".format(id_boliche)
+        if len(boliches) > 0:
+            
+            for boliche in boliches:
 
-            if int(id_bol) == int(id_boliche):
-                print "BOLICHES IGUALES"
-                # ver que parametros le paso a obtener_tema_actual()
-                tema_actual = svc.obtener_tema_actual(id_bol)
-                response = {"tema_actual":tema_actual}
-            else:
-                print "BOLICHES NO IGUALES"
-                response = {} 
+                id_bol = boliche['id']
+                if int(id_bol) == int(id_boliche):
+                    print "BOLICHES IGUALES"
+                    # ver que parametros le paso a obtener_tema_actual()
+                    tema_actual = svc.obtener_tema_actual(id_bol)
+                    response = tema_actual
+                else:
+                    print "BOLICHES NO IGUALES"
+                    response = {} 
         else:
-            print "NO HAS ID"
             response = {}
 
         return response

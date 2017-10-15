@@ -16,8 +16,8 @@ class Service:
         # print "boliches = {}".format(boliches)
         lat = float(lat)
         lon = float(lon)
+        ret = []
         if len(boliches) == 0:
-            ret = {}
             return ret
         for i in range(len(boliches)):
             row = boliches[i]
@@ -30,10 +30,10 @@ class Service:
             #Formula de haversine
             d = 2*r*asin(sqrt(sin(c*(lat-lat1)/2)**2 + cos(c*lat1)*cos(c*lat)*sin(c*(lon-long1)/2)**2))
             if d < 100:
-                ret = {"status":"OK", "nombre":row["nombre"], "id":row["id"] }
-                mssg = json.dumps(ret)
-                return json.loads(mssg)
-        ret = {}
+                res = {"nombre":row["nombre"], "id":row["id"], "latitud":row["latitud"], "longitud":row["longitud"],"id_tema_actual":row["id_tema_actual"] }
+                ret.append(res)
+                # mssg = json.dumps(ret)
+                # return json.loads(mssg)
         mssg = json.dumps(ret)
         return json.loads(mssg)    
 
@@ -42,10 +42,14 @@ class Service:
         return response
 
     def obtener_tema_actual(self, id_boliche):
-        print "self.repo", self.repo
+        # print "self.repo", self.repo
         temas = self.repo.obtener_tema_actual(id_boliche)
         return temas
 
     def insertar_tema_actual(self,nombre,lat,lon):
         response = self.repo.insertar_tema_actual(nombre,lat,lon)
+        return response
+
+    def insertar_like(self, id_boliche, id_tema, tipo_like):
+        response = self.repo.insertar_like(id_boliche, id_tema, tipo_like)
         return response

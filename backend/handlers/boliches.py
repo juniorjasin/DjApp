@@ -2,6 +2,8 @@ from domain import service
 from repos import mysql_repo
 import json
 
+# TODO: verificar en el caso que no vengan los parametros lat y lon porque sino rompe
+
 class BolichesHandler:
     def __init__(self,request):        
         print "__init__"
@@ -10,8 +12,8 @@ class BolichesHandler:
     def post(self):        
         data = self.request.json
         nombre = data["nombre"]
-        latitud = data["lat"]
-        longitud = data["lon"]
+        latitud = data["latitud"]
+        longitud = data["longitud"]
         repo = mysql_repo.MySqlRepo()
         svc = service.Service(repo)
         res = svc.insertar_boliche(nombre,latitud,longitud)
