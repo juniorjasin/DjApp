@@ -30,9 +30,12 @@ export class SuggestPage {
   }
 
   setItems() {
-    this.items = [  'El chaqueño - La ley y la trampa' ,
-     'J. Balvin, Willy William ', 'Danny Ocean - Me Rehúso',
-           'Farruko, Bad Bunny, Rvssian - Krippy Kush', 'Maluma - Borro casette '];
+    this.items = [  'Natti Natasha x Ozuna - Criminal' , 'Rombai - Una y Otra Vez ✖',
+     'J Balvin, Willy William - Mi Gente', 'Wisin - Escápate Conmigo ft. Ozuna',
+     'Chris Jeday - Ahora Dice ft. J. Balvin, Ozuna, Arcángel,', 'Kungs vs Cookin’ on 3 Burners - This Girl',
+     'Shakira - Me Enamoré', 'Shakira - Chantaje ft. Maluma',
+     'Becky G - Mayores ft. Bad Bunny', 'Danny Ocean - Me Rehúso',
+     'Farruko, Bad Bunny, Rvssian - Krippy Kush', 'Maluma - Borro casette '];
   }
 
   // setSubItems() {

@@ -72,7 +72,7 @@ class MySqlRepo:
     def obtener_tema_actual(self, id_boliche):
         
         # print "repo obtener_tema_actual"
-        temas = {}
+        temas = []
         cursor = self.cnx.cursor()
         query = "SELECT temas.id, temas.nombre FROM  (SELECT id_tema FROM temas_boliches WHERE id_boliche = {} ORDER BY id DESC LIMIT 1) as q JOIN temas ON q.id_tema = temas.id".format(id_boliche)
         cursor.execute(query)
@@ -82,7 +82,8 @@ class MySqlRepo:
         cursor.close()
 
         for row in rows:
-            temas = {"id":row[0],"nombre":row[1]}
+            tema = {"id":row[0],"nombre":row[1]}
+            temas.append(tema)
         #   temas.append(tema)
         #   pass
         
@@ -91,8 +92,6 @@ class MySqlRepo:
     def insertar_tema_actual(self,nombre,lat,lon):
         print "repo insertar_tema_actual, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
         return {"status":"Ok"}
-
-
 
 
     def insertar_like(self,id_boliche,id_tema, tipo_like):

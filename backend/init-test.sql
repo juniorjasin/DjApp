@@ -31,7 +31,7 @@ VALUES (1, 1, "like");
 
 
 INSERT INTO temas_boliches (id_boliche, id_tema)
-VALUES (1, 1);
+VALUES (1, 2);
 
 INSERT INTO temas_boliches (id_boliche, id_tema)
 VALUES (1, 1);
