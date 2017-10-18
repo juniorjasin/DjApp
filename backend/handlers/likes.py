@@ -38,10 +38,10 @@ class LikesHandler:
             # Cuando hay boliche en esa latitud o longitud PERO el id en la url no coincide
             if count == 0:
                 print "CONTADOR == CERO"
-                respuesta.append({"status":400, "title":"bad request", "detail":"el id_boliche en la url no se corresponde con la ubicacion que se envio"})
+                respuesta.append({"code":400, "title":"bad request", "detail":"el id_boliche en la url no se corresponde con la ubicacion que se envio"})
 
         # Cuando en la latitud y longitud que se envio no hay ningun boliche
         else :
-            respuesta.append({"status":400, "title":"bad request", "detail":"no existen boliches cercanos a esas coordenadas"})
+            respuesta.append({"code":400, "title":"bad request", "detail":"no existen boliches cercanos a esas coordenadas"})
 
         return {"status": respuesta}

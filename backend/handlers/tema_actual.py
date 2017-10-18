@@ -20,6 +20,7 @@ class TemaActualHandler:
         result = []
 
         count = 0
+        respuesta = []
         # Cuando hay un boliche en esa latitudo o longitud
         if len(boliches) > 0:
             for boliche in boliches:
@@ -28,33 +29,18 @@ class TemaActualHandler:
                     count = count + 1
                     print "BOLICHES IGUALES"
                     tema_actual = svc.obtener_tema_actual(id_bol)
-                    result = {"tema_actual":tema_actual}
+                    respuesta = [] = {"tema_actual":tema_actual}
         
             # TODO: encontrar una forma mas elegante de ver cuando el id_boliche no coincide
             # Cuando hay boliche en esa latitud o longitud PERO el id en la url no coincide
             if count == 0:
                 print "CONTADOR == CERO"
-                error = []
-                status = "400"
-                title = "bad request"
-                detail = "el id_boliche en la url no se corresponde con la ubicacion que se envio"
-                error.append(status)
-                error.append(title)
-                error.append(detail)
-                result = {"errors":error}
-
+                respuesta.append({"code":400, "title":"bad request", "detail":"el id_boliche en la url no se corresponde con la ubicacion que se envio"})
         # Cuando en la latitud y longitud que se envio no hay ningun boliche
         else :
-            error = []
-            status = "400"
-            title = "bad request"
-            detail = "no existen boliches cercanos a esas coordenadas"
-            error.append(status)
-            error.append(title)
-            error.append(detail)
-            result = {"errors":error}
+            respuesta.append({"code":400, "title":"bad request", "detail":"no existen boliches cercanos a esas coordenadas"})
 
-        return result
+        return {"status":respuesta}
 
 
     def post(self):
@@ -65,4 +51,6 @@ class TemaActualHandler:
         # repo = mysql_repo.MySqlRepo()
         # svc = service.Service(repo)
         # res = svc.insertar_tema_actual(nombre,latitud,longitud)
-        return {"respuesta":"ok"}
+        respuesta = []
+        respuesta.append({"code":100, "title":"API no implementada", "detail":"todavia no esta definida la API que inserta un tema actual"})
+        return {"status":respuesta}
