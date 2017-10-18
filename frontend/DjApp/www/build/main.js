@@ -47,8 +47,11 @@ var SuggestPage = (function () {
         //this.setSubItems();
     };
     SuggestPage.prototype.setItems = function () {
-        this.items = ['El chaqueño - La ley y la trampa',
-            'J. Balvin, Willy William ', 'Danny Ocean - Me Rehúso',
+        this.items = ['Natti Natasha x Ozuna - Criminal', 'Rombai - Una y Otra Vez ✖',
+            'J Balvin, Willy William - Mi Gente', 'Wisin - Escápate Conmigo ft. Ozuna',
+            'Chris Jeday - Ahora Dice ft. J. Balvin, Ozuna, Arcángel,', 'Kungs vs Cookin’ on 3 Burners - This Girl',
+            'Shakira - Me Enamoré', 'Shakira - Chantaje ft. Maluma',
+            'Becky G - Mayores ft. Bad Bunny', 'Danny Ocean - Me Rehúso',
             'Farruko, Bad Bunny, Rvssian - Krippy Kush', 'Maluma - Borro casette '];
     };
     // filterItems(ev: any) {
@@ -96,12 +99,12 @@ var SuggestPage = (function () {
 }());
 SuggestPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-suggest',template:/*ion-inline-start:"/Users/lea/Documents/ionic/DjApp/frontend/DjApp/src/pages/suggest/suggest.html"*/'<ion-header> \n  <br>\n  <p> ¡ Gracias por votar !</p>\n  <p> Sugiere al DJ lo que quieres escuchar </p>\n  <br>\n  <ion-searchbar placeholder="Buscar" ></ion-searchbar> \n</ion-header>\n  <br>\n<ion-content padding class="app">\n \n<!-- <ion-list>\n  <ion-item *ngFor="let item of items" (tap)="doSomething(this.item)" >\n    <h2> {{ item }}</h2>\n  </ion-item>\n</ion-list> -->\n\n<ion-list no-lines>\n  <button ion-item *ngFor="let item of items" (tap)="doSomething(this.item)">\n    {{ item }}\n  </button> \n</ion-list>\n\n\n\n</ion-content>\n\n\n<!-- <ion-footer>\n  <button aling="center" ion-button color="blue" (tap)="showAlert()" round>SEND SUGGESTION</button>\n</ion-footer> -->'/*ion-inline-end:"/Users/lea/Documents/ionic/DjApp/frontend/DjApp/src/pages/suggest/suggest.html"*/,
+        selector: 'page-suggest',template:/*ion-inline-start:"/home/jrjs/work/proyectos/DjApp/frontend/DjApp/src/pages/suggest/suggest.html"*/'<ion-header> \n  <br>\n  <p> ¡ Gracias por votar !</p>\n  <p> Sugiere al DJ lo que quieres escuchar </p>\n  <br>\n  <ion-searchbar placeholder="Buscar" ></ion-searchbar> \n</ion-header>\n  <br>\n<ion-content padding class="app">\n \n<!-- <ion-list>\n  <ion-item *ngFor="let item of items" (tap)="doSomething(this.item)" >\n    <h2> {{ item }}</h2>\n  </ion-item>\n</ion-list> -->\n\n<ion-list no-lines>\n  <button ion-item *ngFor="let item of items" (tap)="doSomething(this.item)">\n    {{ item }}\n  </button> \n</ion-list>\n\n\n\n</ion-content>\n\n\n<!-- <ion-footer>\n  <button aling="center" ion-button color="blue" (tap)="showAlert()" round>SEND SUGGESTION</button>\n</ion-footer> -->'/*ion-inline-end:"/home/jrjs/work/proyectos/DjApp/frontend/DjApp/src/pages/suggest/suggest.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" && _c || Object])
 ], SuggestPage);
 
+var _a, _b, _c;
 //# sourceMappingURL=suggest.js.map
 
 /***/ }),
@@ -162,6 +165,8 @@ module.exports = webpackAsyncContext;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(153);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__suggest_suggest__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__services_localization_service__ = __webpack_require__(276);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__services_boliche_service__ = __webpack_require__(277);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -179,6 +184,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+// Servicios de Juan
+
+
 var HomePage = (function () {
     function HomePage(navCtrl, geolocation, http) {
         this.navCtrl = navCtrl;
@@ -189,18 +197,44 @@ var HomePage = (function () {
     }
     HomePage.prototype.ngOnInit = function () {
         var _this = this;
-        // pedir posicion
-        this.geolocation.getCurrentPosition().then(function (resp) {
-            _this.lat = resp.coords.latitude;
-            _this.lon = resp.coords.longitude;
-            console.log('latitud:', _this.lat);
-            console.log('longitud:', _this.lon);
-            _this.getBoliche();
-            // console.log(typeof this.lat.toString());
-            // console.log(this.lat.toString());
-        }).catch(function (error) {
-            console.log('Error getting location', error);
+        // ---------------------------------INICIO: Integracion Juan's Services---------------------------------
+        var geo = new __WEBPACK_IMPORTED_MODULE_7__services_localization_service__["a" /* localizationService */](this.geolocation);
+        var position = geo.getLocalization();
+        geo.getLocalization().subscribe(function (localizacion) {
+            // console.log('VAL',val)
+            _this.lat = Number(localizacion.lat);
+            _this.lon = Number(localizacion.lon);
+            console.log('lat', _this.lat);
+            console.log('lon', _this.lon);
+            var boliche = new __WEBPACK_IMPORTED_MODULE_8__services_boliche_service__["a" /* bolicheService */](_this.http);
+            boliche.getBoliche(localizacion).subscribe(function (b) {
+                console.log("b", b);
+            });
+            // boliche.getBoliche(localizacion).subscribe(bol => {
+            //   console.log("boliches", bol)
+            // });
+            // this.getBoliche()
         });
+        //--------------------------FIN: Integracion Juan's Services---------------------------------
+        /**
+         *
+         // console.log('', )
+         
+            // pedir posicion
+          //   this.geolocation.getCurrentPosition().then((resp) => {
+          //     // this.lat = resp.coords.latitude;
+          //     // this.lon = resp.coords.longitude;
+              
+          //     console.log('latitud:', this.lat);
+          //     console.log('longitud:', this.lon);
+          //     this.getBoliche();
+          //     // console.log(typeof this.lat.toString());
+          //     // console.log(this.lat.toString());
+        
+          // }).catch((error) => {
+          //   console.log('Error getting location', error);
+          // });
+         */
     };
     HomePage.prototype.getBoliche = function () {
         // console.log(`http://demo3876345.mockable.io/prueba?lat=${this.lat}`);
@@ -242,11 +276,12 @@ var HomePage = (function () {
 }());
 HomePage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-home',template:/*ion-inline-start:"/Users/lea/Documents/ionic/DjApp/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content class="app" padding>\n      <p> ¿ Te gusta lo que suena ?</p>\n      <br>\n      <br>\n      <br>\n      <p> 4 Babys - Maluma </p>\n      <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div>\n      <br>\n      <br>\n      <br>\n      <br>\n  \n      <img src="images/x2.png" align="left" style="position: relative; width:30%" (tap)="sendvot(\'485\',\'nomg\')">\n      <img src="images/cuoreg.png" align="right" style="position: relative; width:35%" (tap)="sendvot(\'485\',\'mg\')">\n    \n  </ion-content>\n'/*ion-inline-end:"/Users/lea/Documents/ionic/DjApp/frontend/DjApp/src/pages/home/home.html"*/
+        selector: 'page-home',template:/*ion-inline-start:"/home/jrjs/work/proyectos/DjApp/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content class="app" padding>\n      <p> ¿ Te gusta lo que suena ?</p>\n      <br>\n      <br>\n      <br>\n      <p> 4 Babys - Maluma </p>\n      <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div>\n      <br>\n      <br>\n      <br>\n      <br>\n  \n      <img src="images/x2.png" align="left" style="position: relative; width:30%" (tap)="sendvot(\'485\',\'nomg\')">\n      <img src="images/cuoreg.png" align="right" style="position: relative; width:35%" (tap)="sendvot(\'485\',\'mg\')">\n    \n  </ion-content>\n'/*ion-inline-end:"/home/jrjs/work/proyectos/DjApp/frontend/DjApp/src/pages/home/home.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_geolocation__["a" /* Geolocation */], __WEBPACK_IMPORTED_MODULE_3__angular_http__["a" /* Http */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__ionic_native_geolocation__["a" /* Geolocation */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__ionic_native_geolocation__["a" /* Geolocation */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_http__["a" /* Http */]) === "function" && _c || Object])
 ], HomePage);
 
+var _a, _b, _c;
 //# sourceMappingURL=home.js.map
 
 /***/ }),
@@ -373,12 +408,104 @@ var MyApp = (function () {
     return MyApp;
 }());
 MyApp = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/Users/lea/Documents/ionic/DjApp/frontend/DjApp/src/app/app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"/Users/lea/Documents/ionic/DjApp/frontend/DjApp/src/app/app.html"*/
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/home/jrjs/work/proyectos/DjApp/frontend/DjApp/src/app/app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"/home/jrjs/work/proyectos/DjApp/frontend/DjApp/src/app/app.html"*/
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
 ], MyApp);
 
 //# sourceMappingURL=app.component.js.map
+
+/***/ }),
+
+/***/ 276:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return localizationService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ionic_native_geolocation__ = __webpack_require__(197);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var localizationService = (function () {
+    function localizationService(geolocation) {
+        this.geolocation = geolocation;
+    }
+    localizationService.prototype.getLocalization = function () {
+        var _this = this;
+        return this.geolocation.watchPosition().map(function (position) { return _this.mapPosition(position); });
+    };
+    localizationService.prototype.mapPosition = function (position) {
+        var localization = { lat: null, lon: null };
+        localization.lat = position.coords.latitude;
+        localization.lon = position.coords.longitude;
+        return localization;
+    };
+    return localizationService;
+}());
+localizationService = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["B" /* Injectable */])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__ionic_native_geolocation__["a" /* Geolocation */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__ionic_native_geolocation__["a" /* Geolocation */]) === "function" && _a || Object])
+], localizationService);
+
+var _a;
+//# sourceMappingURL=localization.service.js.map
+
+/***/ }),
+
+/***/ 277:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return bolicheService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(198);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var bolicheService = (function () {
+    function bolicheService(http) {
+        this.http = http;
+    }
+    bolicheService.prototype.getBoliche = function (localization) {
+        var _this = this;
+        var domain = 'http://demo3876345.mockable.io/boliches';
+        var path = '/?lat=' + localization.lat + '&lon=' + localization.lon;
+        var encodedPath = encodeURI(path);
+        console.log("ret", this.http.get(encodedPath).map(function (response) { return _this.mapBoliche(response.json()); }));
+        return this.http.get(encodedPath).map(function (response) { return _this.mapBoliche(response.json()); });
+    };
+    bolicheService.prototype.mapBoliche = function (data) {
+        var boliche = { id: null, nombre: '' };
+        boliche.id = data['boliche'].id;
+        boliche.nombre = data['boliche'].nombre;
+        return boliche;
+    };
+    return bolicheService;
+}());
+bolicheService = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["B" /* Injectable */])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_http__["a" /* Http */]) === "function" && _a || Object])
+], bolicheService);
+
+var _a;
+//# sourceMappingURL=boliche.service.js.map
 
 /***/ })
 

@@ -13,8 +13,10 @@ export class bolicheService {
 	constructor(public http: Http){}
 
   	getBoliche(localization:Localization): Observable<Boliche>{
-      let path = '/?lat=' + localization.lat + '&lon=' + localization.lon;
-	    let encodedPath = encodeURI(path);
+		let domain = 'http://demo3876345.mockable.io/boliches'
+      	let path = '/?lat=' + localization.lat + '&lon=' + localization.lon;
+		let encodedPath = encodeURI(path);
+		console.log("ret", this.http.get(encodedPath).map(response => this.mapBoliche(response.json())));
 	   	return this.http.get(encodedPath).map(response => this.mapBoliche(response.json()));
   	}
 

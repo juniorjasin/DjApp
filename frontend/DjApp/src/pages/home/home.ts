@@ -8,6 +8,11 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import { SuggestPage } from '../suggest/suggest';
 
+// Servicios de Juan
+import { localizationService } from '../../services/localization.service';
+import { bolicheService } from '../../services/boliche.service';
+
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -25,20 +30,53 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
 
-    // pedir posicion
-    this.geolocation.getCurrentPosition().then((resp) => {
-    this.lat = resp.coords.latitude;
-    this.lon = resp.coords.longitude;
+    // ---------------------------------INICIO: Integracion Juan's Services---------------------------------
+    var geo = new localizationService(this.geolocation);
+    var position = geo.getLocalization();
 
-    console.log('latitud:', this.lat);
-    console.log('longitud:', this.lon);
-    this.getBoliche();
-    // console.log(typeof this.lat.toString());
-    // console.log(this.lat.toString());
+    geo.getLocalization().subscribe(localizacion => {
+      // console.log('VAL',val)
+      this.lat =  Number(localizacion.lat);
+      this.lon =  Number(localizacion.lon);
 
-  }).catch((error) => {
-    console.log('Error getting location', error);
-  });
+      console.log('lat',this.lat)
+      console.log('lon',this.lon)
+
+      var boliche = new bolicheService(this.http);
+
+      boliche.getBoliche(localizacion).subscribe(b => {
+        console.log("b", b);
+      });
+      
+
+      // boliche.getBoliche(localizacion).subscribe(bol => {
+      //   console.log("boliches", bol)
+      // });
+
+      // this.getBoliche()
+    });
+
+    //--------------------------FIN: Integracion Juan's Services---------------------------------
+    
+    /**
+     * 
+     // console.log('', )
+     
+        // pedir posicion
+      //   this.geolocation.getCurrentPosition().then((resp) => {
+      //     // this.lat = resp.coords.latitude;
+      //     // this.lon = resp.coords.longitude;
+          
+      //     console.log('latitud:', this.lat);
+      //     console.log('longitud:', this.lon);
+      //     this.getBoliche();
+      //     // console.log(typeof this.lat.toString());
+      //     // console.log(this.lat.toString());
+    
+      // }).catch((error) => {
+      //   console.log('Error getting location', error);
+      // });
+     */
 }
 
 private getBoliche() {

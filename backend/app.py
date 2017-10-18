@@ -1,4 +1,4 @@
-from bottle import Bottle, route, run, template, get, post, request,response
+from bottle import Bottle, route, run, template, get, post, request, response
 import sys
 import json
 
@@ -16,7 +16,7 @@ app = Bottle()
 # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 # ch.setFormatter(formatter)
 
-# API 6
+# API 6 
 @app.route('/boliches', method="POST")
 def insertar_boliche():        
     a = boliches.BolichesHandler(request)
@@ -47,7 +47,6 @@ def insertar_actual(id_boliche):
     res = a.post(id_boliche)
     response.headers['Content-Type'] = 'application/json'
     return json.dumps(res)
-
 
 #API 8 
 @app.route('/likes', method="POST")

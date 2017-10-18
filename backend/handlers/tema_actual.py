@@ -17,30 +17,30 @@ class TemaActualHandler:
         repo = mysql_repo.MySqlRepo()
         svc = service.Service(repo)
         boliches = svc.listar_boliches(latitud, longitud)
-        response = {}
+        result = []
 
-        print boliches
-        print type(boliches)
-        # print boliches.has_key('id')
-
-
+        count = 0
+        respuesta = []
+        # Cuando hay un boliche en esa latitudo o longitud
         if len(boliches) > 0:
-            
             for boliche in boliches:
-
                 id_bol = boliche['id']
                 if int(id_bol) == int(id_boliche):
+                    count = count + 1
                     print "BOLICHES IGUALES"
-                    # ver que parametros le paso a obtener_tema_actual()
                     tema_actual = svc.obtener_tema_actual(id_bol)
-                    response = tema_actual
-                else:
-                    print "BOLICHES NO IGUALES"
-                    response = {} 
-        else:
-            response = {}
+                    respuesta = [] = {"tema_actual":tema_actual}
+        
+            # TODO: encontrar una forma mas elegante de ver cuando el id_boliche no coincide
+            # Cuando hay boliche en esa latitud o longitud PERO el id en la url no coincide
+            if count == 0:
+                print "CONTADOR == CERO"
+                respuesta.append({"code":400, "title":"bad request", "detail":"el id_boliche en la url no se corresponde con la ubicacion que se envio"})
+        # Cuando en la latitud y longitud que se envio no hay ningun boliche
+        else :
+            respuesta.append({"code":400, "title":"bad request", "detail":"no existen boliches cercanos a esas coordenadas"})
 
-        return response
+        return {"status":respuesta}
 
 
     def post(self):
@@ -51,4 +51,6 @@ class TemaActualHandler:
         # repo = mysql_repo.MySqlRepo()
         # svc = service.Service(repo)
         # res = svc.insertar_tema_actual(nombre,latitud,longitud)
-        return {"respuesta":"ok"}
+        respuesta = []
+        respuesta.append({"code":100, "title":"API no implementada", "detail":"todavia no esta definida la API que inserta un tema actual"})
+        return {"status":respuesta}
