@@ -16,7 +16,7 @@ app = Bottle()
 # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 # ch.setFormatter(formatter)
 
-# API 6
+# API 6 
 @app.route('/boliches', method="POST")
 def insertar_boliche():        
     a = boliches.BolichesHandler(request)

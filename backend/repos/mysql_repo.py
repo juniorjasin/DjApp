@@ -53,7 +53,8 @@ class MySqlRepo:
     
     def insertar_boliche(self,nombre,lat,lon):
         # print "repo insertar_boliches, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
-        ret = {"status":"Ok"}
+        result = []
+
         try:
             cursor = self.cnx.cursor()
             query = "INSERT INTO boliches (nombre,latitud,longitud) VALUES (%s,%s,%s)"
@@ -62,9 +63,12 @@ class MySqlRepo:
             cursor.execute(query,values)
             self.cnx.commit()
             cursor.close()
+            respuesta = {"code":"200", "title":"OK", "detail":"se pudo insertar en la base de datos"}
+            result.append(respuesta)
         except pymysql.Error as err:
-            ret = {}
-        return ret
+            error = {"code":"400", "title":"FAIL", "detail":"No se pudo insertar en la base de datos"}
+            result.append(error)
+        return result
 
     
     # notar que puede retornar el tema con fecha mas actual pero hay que verificar que corresponda al
@@ -96,7 +100,7 @@ class MySqlRepo:
 
     def insertar_like(self,id_boliche,id_tema, tipo_like):
         # print "repo insertar_boliches, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
-        ret = {"status":"Ok"}
+        result = []
         try:
             cursor = self.cnx.cursor()
             query = "INSERT INTO likes (id_boliche, id_tema, fecha_hora, tipo_like) VALUES (%s,%s,%s,%s)"
@@ -105,7 +109,10 @@ class MySqlRepo:
             cursor.execute(query,values)
             self.cnx.commit()
             cursor.close()
+            respuesta = {"code":"200", "title":"OK", "detail":"se pudo insertar en la base de datos"}
+            result.append(respuesta)
         except pymysql.Error as err:
-            ret = {}
-        return ret
+            error = {"code":"400", "title":"FAIL", "detail":"No se pudo insertar en la base de datos"}
+            result.append(error)
+        return result
 

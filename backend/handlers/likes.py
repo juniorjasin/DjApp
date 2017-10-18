@@ -25,6 +25,7 @@ class LikesHandler:
         boliches = svc.listar_boliches(latitud, longitud)        
         
         count = 0
+        respuesta = []
         if len(boliches) > 0:
             for boliche in boliches:
                 id_bol = boliche['id']
@@ -32,29 +33,15 @@ class LikesHandler:
                     count = count + 1
                     print "BOLICHES IGUALES"
                     # ver que parametros le paso a obtener_tema_actual()
-                    result = svc.insertar_like(id_bol, id_tema, tipo_like)
+                    respuesta = svc.insertar_like(id_bol, id_tema, tipo_like)
             # TODO: encontrar una forma mas elegante de ver cuando el id_boliche no coincide
             # Cuando hay boliche en esa latitud o longitud PERO el id en la url no coincide
             if count == 0:
                 print "CONTADOR == CERO"
-                error = []
-                status = "400"
-                title = "bad request"
-                detail = "el id_boliche en la url no se corresponde con la ubicacion que se envio"
-                error.append(status)
-                error.append(title)
-                error.append(detail)
-                result = {"errors":error}
+                respuesta.append({"status":400, "title":"bad request", "detail":"el id_boliche en la url no se corresponde con la ubicacion que se envio"})
 
         # Cuando en la latitud y longitud que se envio no hay ningun boliche
         else :
-            error = []
-            status = "400"
-            title = "bad request"
-            detail = "no existen boliches cercanos a esas coordenadas"
-            error.append(status)
-            error.append(title)
-            error.append(detail)
-            result = {"errors":error}
+            respuesta.append({"status":400, "title":"bad request", "detail":"no existen boliches cercanos a esas coordenadas"})
 
-        return result
+        return {"status": respuesta}

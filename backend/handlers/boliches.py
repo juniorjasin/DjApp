@@ -16,8 +16,8 @@ class BolichesHandler:
         longitud = data["longitud"]
         repo = mysql_repo.MySqlRepo()
         svc = service.Service(repo)
-        res = svc.insertar_boliche(nombre,latitud,longitud)
-        return res
+        respuesta = svc.insertar_boliche(nombre,latitud,longitud)
+        return {"status":respuesta}
 
 
     def get(self):
