@@ -1,5 +1,6 @@
 import pymysql
 import datetime
+from util import exception
 
 mysql_config = {
     'host': 'localhost',
@@ -49,6 +50,7 @@ class MySqlRepo:
                     boliches.append(boliche)
         except pymysql.Error as err:
             msg = "Failed init database: {}".format(err)
+            raise exception.InternalServerError("fallo conexion con base de datos")
         return boliches
     
     def insertar_boliche(self,nombre,lat,lon):
@@ -66,8 +68,9 @@ class MySqlRepo:
             respuesta = {"code":"200", "title":"OK", "detail":"se pudo insertar en la base de datos"}
             result.append(respuesta)
         except pymysql.Error as err:
-            error = {"code":"400", "title":"FAIL", "detail":"No se pudo insertar en la base de datos"}
-            result.append(error)
+            # error = {"code":"400", "title":"FAIL", "detail":"No se pudo insertar en la base de datos"}
+            # result.append(error)
+            raise exception.InternalServerError("fallo conexion con base de datos")
         return result
 
     
@@ -77,20 +80,23 @@ class MySqlRepo:
         
         # print "repo obtener_tema_actual"
         temas = []
-        cursor = self.cnx.cursor()
-        query = "SELECT temas.id, temas.nombre FROM  (SELECT id_tema FROM temas_boliches WHERE id_boliche = {} ORDER BY id DESC LIMIT 1) as q JOIN temas ON q.id_tema = temas.id".format(id_boliche)
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        # print rows
-        # print type(rows)
-        cursor.close()
+        try:
+            cursor = self.cnx.cursor()
+            query = "SELECT temas.id, temas.nombre FROM  (SELECT id_tema FROM temas_boliches WHERE id_boliche = {} ORDER BY id DESC LIMIT 1) as q JOIN temas ON q.id_tema = temas.id".format(id_boliche)
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            # print rows
+            # print type(rows)
+            cursor.close()
 
-        for row in rows:
-            tema = {"id":row[0],"nombre":row[1]}
-            temas.append(tema)
-        #   temas.append(tema)
-        #   pass
-        
+            for row in rows:
+                tema = {"id":row[0],"nombre":row[1]}
+                temas.append(tema)
+            #   temas.append(tema)
+            #   pass
+        except pymysql.Error as err:
+             raise exception.InternalServerError("fallo conexion con base de datos")
+
         return temas
 
     def insertar_tema_actual(self,nombre,lat,lon):
@@ -112,7 +118,8 @@ class MySqlRepo:
             respuesta = {"code":"200", "title":"OK", "detail":"se pudo insertar en la base de datos"}
             result.append(respuesta)
         except pymysql.Error as err:
-            error = {"code":"400", "title":"FAIL", "detail":"No se pudo insertar en la base de datos"}
-            result.append(error)
+            # error = {"code":"400", "title":"FAIL", "detail":"No se pudo insertar en la base de datos"}
+            # result.append(error)
+            raise exception.InternalServerError("fallo conexion con base de datos")
         return result
 
