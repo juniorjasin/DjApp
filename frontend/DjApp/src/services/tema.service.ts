@@ -1,5 +1,7 @@
 import { Http } from '@angular/http';
+import { Headers, RequestOptions } from '@angular/http';
 import { Tema } from '../common/Tema';
+import { Location } from '../common/Location';
 import { Observable } from 'rxjs/Observable';
 
 import { 
@@ -11,33 +13,45 @@ export class temaService {
 
 	constructor(public http: Http){}
 
-  	getTemas(id_boliche): Observable<Tema[]>{
-      let path = '127.0.0.1:9090/temas_actuales/' + id_boliche;
+  	getTemasPropuestos(id_boliche, location: Location): Observable<Tema[]>{
+      let path = '/boliches' + id_boliche + '/temas_propuestos/';
 	    let encodedPath = encodeURI(path);
-	   	return this.http.get(encodedPath).map(response => this.mapTemas(response.json()));
+      let headers = new Headers(
+        {'Content-Type': 'application/json',
+         'Latitude': location.lat,
+         'Longitude': location.lon
+        });
+      let options = new RequestOptions({ headers: headers });
+	   	return this.http.get(encodedPath, options).map(response => this.mapTemasPropuestos(response.json()));
   	}
 
-    getTemaActual(id_boliche): Observable<Tema>{
-      let path = '//' + id_boliche;
+    getTemaActual(id_boliche, location: Location): Observable<Tema []>{
+      let path = '/boliches/' + id_boliche + '/tema_actual';
       let encodedPath = encodeURI(path);
-      return this.http.get(encodedPath).map(response => this.mapTemaActual(response.json()));
+      let headers = new Headers(
+        {'Content-Type': 'application/json',
+         'Latitude': location.lat,
+         'Longitude': location.lon
+        });
+      let options = new RequestOptions({ headers: headers });
+      return this.http.get(encodedPath, options).map(response => this.mapTemaActual(response.json()));
     }
 
-  	private mapTemas(data): Tema []{
+  	private mapTemasPropuestos(data): Tema []{
   		const temas: Tema [] = [];
   		for (var i = 0; i < data['temas_propuestos'].length; i++) {
-  			temas.push({id: data['temas_propuestos'].id,
-                    nombre: data['temas_propuestos'][i].nombre, 
-                    autor: data['temas_propuestos'][i].autor});
+  			temas.push({id: data['temas_propuestos'][i].id,
+                    nombre: data['temas_propuestos'][i].nombre});
   		}
   		return temas;
   	}
 
-    private mapTemaActual(data): Tema {
-      const tema: Tema = {id: null, nombre: '', autor: ''};
-      tema.nombre = data['tema_actual'].nombre;
-      tema.autor  = data['tema_actual'].autor;
-      tema.id     = data['tema_actual'].id;
+    private mapTemaActual(data): Tema [] {
+      const tema: Tema [] = [];
+      for (var i = 0; i < data['tema_actual'].length; i++) {
+        tema.push({id: data['tema_actual'][i].id,
+                    nombre: data['tema_actual'][i].nombre});
+      }
       return tema;
     }
 }

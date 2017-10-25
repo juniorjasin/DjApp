@@ -1,6 +1,6 @@
 import { Http } from '@angular/http';
 import { Boliche } from '../common/Boliche';
-import { Localization } from '../common/Localization';
+import { Location } from '../common/Location';
 import { Observable } from 'rxjs/Observable';
 
 import { 
@@ -12,16 +12,20 @@ export class bolicheService {
 
 	constructor(public http: Http){}
 
-  	getBoliche(localization:Localization): Observable<Boliche>{
-      let path = '/?lat=' + localization.lat + '&lon=' + localization.lon;
+  	getBoliches(location:Location): Observable<Boliche []>{
+      let path = '/boliches?lat=' + location.lat + '&lon=' + location.lon;
 	    let encodedPath = encodeURI(path);
-	   	return this.http.get(encodedPath).map(response => this.mapBoliche(response.json()));
+	   	return this.http.get(encodedPath).map(response => this.mapBoliche(response.json()), err => alert(err));
   	}
 
-  	private mapBoliche(data): Boliche{
-  		const boliche: Boliche = {id: null, nombre: ''};
-      boliche.id = data['boliche'].id;
-      boliche.nombre = data['boliche'].nombre;
-  		return boliche;
+  	private mapBoliche(data): Boliche []{
+  		const boliches: Boliche [] = [];
+      for (var i = 0; i < data['boliches'].length; i++) {
+        boliches.push({id: data['boliches'][i].id,                       
+                       latitud: data['boliches'][i].latitud,
+                       longitud: data['boliches'][i].longitud,
+                       nombre: data['boliches'][i].nombre});
+      }
+  		return boliches;
   	}
 }
