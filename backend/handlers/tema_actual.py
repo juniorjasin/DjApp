@@ -47,18 +47,11 @@ class TemaActualHandler:
         # else :
         #     # respuesta.append({"code":400, "title":"bad request", "detail":"no existen boliches cercanos a esas coordenadas"})
         #     pass
-
+        
         return {"tema_actual":respuesta}
 
 
     def post(self):
-        # nombre = self.request.query.nombre
-        # latitud = self.request.query.lat
-        # longitud = self.request.query.lon
-        # print "post tema_actual, nombre = {}, lat = {}, lon={}".format(nombre,latitud,longitud)
-        # repo = mysql_repo.MySqlRepo()
-        # svc = service.Service(repo)
-        # res = svc.insertar_tema_actual(nombre,latitud,longitud)
         respuesta = []
-        respuesta.append({"code":100, "title":"API no implementada", "detail":"todavia no esta definida la API que inserta un tema actual"})
+        respuesta.append({"title": "API no implementada","user_message": "esta API no esta habilitada por el momento","developer_message":"todavia no se sabe como setear un tema actual"})
         return {"status":respuesta}
