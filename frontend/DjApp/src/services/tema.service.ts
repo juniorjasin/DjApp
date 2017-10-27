@@ -15,7 +15,7 @@ export class temaService {
 	constructor(public http: Http){}
 
   	getTemasPropuestos(id_boliche, location: Location): Observable<Tema[]>{
-      let path = '/boliches' + id_boliche + '/temas_propuestos/';
+      let path = '/boliches' + id_boliche + '/temas_propuestos';
 	    let encodedPath = encodeURI(path);
       let headers = new Headers(
         {'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ export class temaService {
   	}
 
     getTemaActual(id_boliche, location: Location): Observable<Tema []>{
-      let path = 'http://demo5905352.mockable.io/tema_actual';
+      let path = '/boliches' + id_boliche + '/tema_actual';
       let encodedPath = encodeURI(path);
       let headers = new Headers(
         {'Content-Type': 'application/json',

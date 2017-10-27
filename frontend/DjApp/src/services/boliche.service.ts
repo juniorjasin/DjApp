@@ -14,7 +14,7 @@ export class bolicheService {
 	constructor(public http: Http){}
 
   	getBoliches(location:Location): Observable<Boliche []>{
-      let path = 'http://demo5905352.mockable.io/boliches?lat=' + location.lat + '&lon=' + location.lon;
+      let path = '/boliches?lat=' + location.lat + '&lon=' + location.lon;
 	    let encodedPath = encodeURI(path);
 	   	return this.http.get(encodedPath).map(response => this.mapBoliche(response.json()), err => alert(err));
   	}

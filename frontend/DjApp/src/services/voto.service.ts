@@ -15,7 +15,7 @@ export class votoService {
 	constructor(public http: Http){}
 
   	postVoto(voto:Voto, id_boliche, location: Location): Observable<Voto []>{
-      let path = 'http://demo5905352.mockable.io/boliches/' + voto.id_boliche + '/likes';
+      let path = '/' + voto.id_boliche + '/likes';
 	    let encodedPath = encodeURI(path);
       let headers = new Headers(
         {'Content-Type': 'application/json',
