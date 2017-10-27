@@ -1,8 +1,9 @@
 import { Http } from '@angular/http';
 import { Headers, RequestOptions } from '@angular/http';
 import { Voto } from '../common/Voto';
-import { Status } from '../common/Status';
+import { Location } from '../common/Location';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 
 import { 
    Injectable 
@@ -13,21 +14,25 @@ export class votoService {
 
 	constructor(public http: Http){}
 
-  	postVoto(voto:Voto): Observable<Status>{
-      let path = 'http://127.0.0.1:8081/register';
+  	postVoto(voto:Voto, id_boliche, location: Location): Observable<Voto []>{
+      let path = 'http://demo5905352.mockable.io/boliches/' + voto.id_boliche + '/likes';
 	    let encodedPath = encodeURI(path);
       let headers = new Headers(
-      { 'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin':  '*' });
-      let options = new RequestOptions(
-        { headers: headers});
+        {'Content-Type': 'application/json',
+         'Latitude': location.lat,
+         'Longitude': location.lon
+        });
+      let options = new RequestOptions({ headers: headers });
 	   	return this.http.post(encodedPath,voto,options).map(response => this.mapStatus(response.json()));
   	}
 
-  	private mapStatus(data): Status{
-  		const status: Status = {status: '', message: ''};
-      status.status = data.status;
-      status.message = data.message;
-  		return status;
+  	private mapStatus(data): Voto []{
+  		const voto: Voto [] = [];
+      for (var i = 0; i < data['voto'].length; i++) {
+        voto.push({id_boliche: data['voto'][i].id_boliche,                       
+                   id_tema: data['voto'][i].id_tema,
+                   tipo_voto: data['voto'][i].tipo_voto});
+      }
+      return voto;
   	}
 }

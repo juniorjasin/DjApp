@@ -1,4 +1,5 @@
 export interface Voto{
 	id_boliche:number;
-	voto:string;
+	id_tema:number;
+	tipo_voto:string;
 }

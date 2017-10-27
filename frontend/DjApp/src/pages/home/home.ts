@@ -1,127 +1,123 @@
-// import { Component } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { Geolocation } from '@ionic-native/geolocation';
-
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
 import { SuggestPage } from '../suggest/suggest';
 
-// Servicios de Juan
-import { localizationService } from '../../services/localization.service';
-import { bolicheService } from '../../services/boliche.service';
+//Interfaces
+import { Boliche } from '../../common/Boliche';
+import { Tema } from '../../common/Tema';
+import { Location } from '../../common/Location';
+import { Voto } from '../../common/Voto';
+
+//Servicios
+import { 
+   errorManangerService
+} from '../../services/error.mananger.service';
+import { 
+   bolicheService
+} from '../../services/boliche.service';
+import { 
+   locationService
+} from '../../services/location.service';
+import { 
+   temaService 
+} from '../../services/tema.service';
+import { 
+   votoService 
+} from '../../services/voto.service';
 
 
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html'
+  templateUrl: 'home.html',
+  providers: [errorManangerService, bolicheService, locationService, temaService, votoService]
 })
 export class HomePage implements OnInit {
 
-  lat:number;
-  lon:number;
+  @Input("v_nombre_tema_actual") v_nombre_tema_actual;
+  @Input("v_nombre_boliche") v_nombre_boliche;
+  boliche: Boliche;
+  location: Location;
+  tema_actual: Tema;
 
-  constructor(public navCtrl: NavController, private geolocation: Geolocation, public http: Http) {
-    this.lat = 0;
-    this.lon = 0;
-
+  constructor(private _bolicheService: bolicheService,
+              private _locationService: locationService,
+              private _temaService: temaService,
+              private _votoService: votoService,
+              private _errorManangerService: errorManangerService,
+              private navCtrl: NavController) {
+    this.boliche = {id: null, latitud: null, longitud: null ,nombre: null};
+    this.location = {lat: null, lon: null};
+    this.tema_actual = {id: null, nombre: null};
   }
 
   ngOnInit() {
+  	this._locationService.getLocation().subscribe(location => {
+        this.location.lat = location.lat;
+        this.location.lon = location.lon;
+   	});
+    this.searchBoliche();
+    this.searchTemaActual();
+  }
 
-    // ---------------------------------INICIO: Integracion Juan's Services---------------------------------
-    var geo = new localizationService(this.geolocation);
-    var position = geo.getLocalization();
+  private searchBoliche(){
+    var IntervalID = window.setInterval(() => {
+      if(this.boliche.id == null && this.location.lat != null && this.location.lon != null)
+        this.setBoliche();
+      else
+        clearInterval(IntervalID);
+    },5000);
+  }
 
-    geo.getLocalization().subscribe(localizacion => {
-      // console.log('VAL',val)
-      this.lat =  Number(localizacion.lat);
-      this.lon =  Number(localizacion.lon);
+  private setBoliche(){
+    this._bolicheService.getBoliches(this.location).subscribe(boliches => {
+      for (var i = 0; i < boliches.length; i++) {
+        this.boliche.id = boliches[i].id;
+        this.boliche.nombre = boliches[i].nombre;
+        this.boliche.latitud = boliches[i].latitud;
+        this.boliche.longitud = boliches[i].longitud;
+        this.v_nombre_boliche = this.boliche.nombre; 
+      }
+    },
+    error => this._errorManangerService.threatError(error));
+  }
 
-      console.log('lat',this.lat)
-      console.log('lon',this.lon)
+  private searchTemaActual(){
+    var IntervalID = window.setInterval(() => {
+      if(this.boliche.id != null)
+        this.setTemaActual();
+    },5000);
+  }
 
-      var boliche = new bolicheService(this.http);
+  private setTemaActual(){
+    this._temaService.getTemaActual(this.boliche.id, this.location).subscribe(tema_actual => {
+      for (var i = 0; i < tema_actual.length; i++) {
+        this.tema_actual.id = tema_actual[i].id;
+        this.tema_actual.nombre = tema_actual[i].nombre;
+        this.v_nombre_tema_actual = this.tema_actual.nombre;
+      }
+    },
+    error => this._errorManangerService.threatError(error));
+  }
 
-      boliche.getBoliche(localizacion).subscribe(b => {
-        console.log("b", b);
-      });
-      
+  public sendVoto(tipo_voto){
+    const voto: Voto = {
+      id_boliche: this.boliche.id,
+      id_tema: this.tema_actual.id,
+      tipo_voto: tipo_voto
+    }
+    if(this.boliche.id != null && this.tema_actual.id != null){
+    	this._votoService.postVoto(voto,this.boliche.id,this.location).subscribe(voto => {
+	      if(voto.length > 0)
+	        this.navCtrl.push(SuggestPage, {
+	          boliche: this.boliche,
+	          location: this.location
+	        });
+	    },
+	    error => this._errorManangerService.threatError(error));
+    }
+  }
 
-      // boliche.getBoliche(localizacion).subscribe(bol => {
-      //   console.log("boliches", bol)
-      // });
 
-      // this.getBoliche()
-    });
 
-    //--------------------------FIN: Integracion Juan's Services---------------------------------
-    
-    /**
-     * 
-     // console.log('', )
-     
-        // pedir posicion
-      //   this.geolocation.getCurrentPosition().then((resp) => {
-      //     // this.lat = resp.coords.latitude;
-      //     // this.lon = resp.coords.longitude;
-          
-      //     console.log('latitud:', this.lat);
-      //     console.log('longitud:', this.lon);
-      //     this.getBoliche();
-      //     // console.log(typeof this.lat.toString());
-      //     // console.log(this.lat.toString());
-    
-      // }).catch((error) => {
-      //   console.log('Error getting location', error);
-      // });
-     */
-}
-
-private getBoliche() {
-  
-  // console.log(`http://demo3876345.mockable.io/prueba?lat=${this.lat}`);
-
-  let path = "http://demo3876345.mockable.io/prueba?lat=" + this.lat + "lon=" + this.lon ; // cambiar url 
-  console.log(path);
-
-  let encodedPath = encodeURI(path);
-  let timeoutMS = 10000;
-  this.http.get(encodedPath)
-      .timeout(timeoutMS)
-      .map(res => res.json()).subscribe(data => {
-          let responseData = data;
-          console.log(responseData);
-      },
-      err => {
-          console.log('error in getting boliche');
-      });
-}
-  
-
-private sendvot(id_tema,vot){
-  this.navCtrl.push(SuggestPage);
-  console.log("entro papaaa", id_tema);
-  console.log("entro papaaa", vot);
-/*
-  let path = "http://localhost:8081/sendvot?lat=" + this.lat + "&lon=" + this.lon + "&id_tema=" + id_tema + "&estado=" + vot; // cambiar url 
-  console.log(path);
-  
-  let encodedPath = encodeURI(path);
-  let timeoutMS = 10000;
-  this.http.get(encodedPath)
-      .timeout(timeoutMS)
-      .map(res => res.json()).subscribe(data => {
-          let responseData = data;
-          console.log(responseData);
-          //this.navCtrl.push(SuggestPage);
-      },
-      err => {
-          console.log('error in send voto');
-      });*/
-
-}
-  
 }
 
