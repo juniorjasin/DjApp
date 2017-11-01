@@ -20,7 +20,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-# API 6 
+# API 6. Insertar boliches
 @app.route('/boliches', method="POST")
 @my_decorator
 def insertar_boliche():        
@@ -30,6 +30,7 @@ def insertar_boliche():
     response.headers['Content-Type'] = 'application/json'
     return json.dumps(res)
 
+# API 6. Obtener boliches
 @app.route('/boliches', method="GET")
 @my_decorator
 def consultar_boliches():
@@ -39,7 +40,7 @@ def consultar_boliches():
     return json.dumps(b)
 
 
-#API 7
+#API 7: Obtener el tema actual
 @app.route('/boliches/<id_boliche>/tema_actual', method="GET")
 @my_decorator
 def consultar_tema_actual(id_boliche):
@@ -48,7 +49,7 @@ def consultar_tema_actual(id_boliche):
     response.headers['Content-Type'] = 'application/json'
     return json.dumps(b)
 
-
+#API 7: Setear el tema actual
 @app.route('/boliches/<id_boliche>/tema_actual', method="POST")
 @my_decorator
 def insertar_actual(id_boliche):        
@@ -57,7 +58,7 @@ def insertar_actual(id_boliche):
     response.headers['Content-Type'] = 'application/json'
     return json.dumps(res)
 
-#API 8 
+#API 8: Insertar un like a un tema, en un boliche
 @app.route('/likes', method="POST")
 @my_decorator
 def insertar_actual():        

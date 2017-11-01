@@ -1,33 +1,34 @@
 import pymysql
 import datetime
+import os
 from util import exception
 
-mysql_config = {
-    'host': 'localhost',
-    'db': 'djapp',
-    'user': 'dev',
-    'passwd': 'changeme'
-}
+# mysql_config = {
+#     'host': 'localhost',
+#     'db': 'djapp',
+#     'user': 'dev',
+#     'passwd': 'changeme'
+# }
 
-"""
+# """
 mysql_config = {
     'host': os.environ['MYSQL_ENDPOINT'],
     'db': os.environ['MYSQL_DATABASE'],
     'user': os.environ['MYSQL_USER'],
-    'passwd': os.environ['MYSQL-PASSWORD']
+    'passwd': os.environ['MYSQL_PASSWORD']
     }
-"""
+# """
 
 class MySqlRepo:
     def __init__(self):
         self.cnx=None
         try:        
+            print mysql_config
             self.cnx = pymysql.connect(**mysql_config)    
             print self.cnx    
 
         except pymysql.Error as err:
-            msg = "Failed init database: {}".format(err)
-            print msg
+            raise exception.InternalServerError("fallo conexion con base de datos")
         except Exception as ex:
             pass
 
@@ -50,7 +51,7 @@ class MySqlRepo:
                     boliches.append(boliche)
         except pymysql.Error as err:
             msg = "Failed init database: {}".format(err)
-            raise exception.InternalServerError("fallo conexion con base de datos")
+            raise exception.InternalServerError("fallo query obtener_boliches")
         return boliches
     
     def insertar_boliche(self,nombre,lat,lon):
@@ -70,7 +71,7 @@ class MySqlRepo:
         except pymysql.Error as err:
             # error = {"code":"400", "title":"FAIL", "detail":"No se pudo insertar en la base de datos"}
             # result.append(error)
-            raise exception.InternalServerError("fallo conexion con base de datos")
+            raise exception.InternalServerError("fallo insertar_boliche")
         return result
 
     
@@ -95,7 +96,7 @@ class MySqlRepo:
             #   temas.append(tema)
             #   pass
         except pymysql.Error as err:
-             raise exception.InternalServerError("fallo conexion con base de datos")
+             raise exception.InternalServerError("fallo obtener_tema_actual")
 
         return temas
 
@@ -120,6 +121,6 @@ class MySqlRepo:
         except pymysql.Error as err:
             # error = {"code":"400", "title":"FAIL", "detail":"No se pudo insertar en la base de datos"}
             # result.append(error)
-            raise exception.InternalServerError("fallo conexion con base de datos")
+            raise exception.InternalServerError("fallo insertar_like")
         return result
 

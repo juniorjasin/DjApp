@@ -1,0 +1,9 @@
+.git
+.tox
+*.egg-info
+ci
+deploy
+doc
+.idea
+build-and-push-image.sh
+database/

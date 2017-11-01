@@ -1,0 +1,24 @@
+sudo yum update
+sudo yum install docker
+sudo usermod -aG docker $USER
+sudo service docker start
+
+sudo curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+
+ssh -i .ssh/djapp_v1.pem ec2-user@54.86.110.165
+scp -i ~/.ssh/djapp_v1.pem docker-compose.yml ec2-user@54.86.110.165:
+
+ejecutar sql contra mysql en docker compose
+docker run --rm -v $PWD/db-scripts:/tmp/db --net djapp_default mysql:5.7 mysql -u root -pchangeme -h mysql djapp -e "source /tmp/db/schema.sql"
+
+
+
+Actualizar con nueva version (Por ej, de 0.0.1.0 a 0.0.2.0)
+
+En instancia AWS
+
+$ docker login
+$ docker pull juniorjasin/djapp:0.0.2.0
+$ sed -i'' 's@juniorjasin/djapp:0.0.1.0@juniorjasin/djapp:0.0.2.0@g' docker-compose.yml
+$ docker-compose up -d --no-deps djapp
