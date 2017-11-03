@@ -3,100 +3,78 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
+//Interfaces
+import { Boliche } from '../../common/Boliche';
+import { Tema } from '../../common/Tema';
+import { Location } from '../../common/Location';
+import { Voto } from '../../common/Voto';
 
-/**
- * Generated class for the SuggestPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+//Servicios
+import { 
+   errorManangerService
+} from '../../services/error.mananger.service';
+import { 
+   temaService 
+} from '../../services/tema.service';
+import { 
+   votoService 
+} from '../../services/voto.service';
+
 
 @IonicPage()
 @Component({
   selector: 'page-suggest',
   templateUrl: 'suggest.html',
+  providers: [errorManangerService, temaService, votoService]
 })
 export class SuggestPage {
-  items: Array<string>;
-  subitems: Array<string>
-  //te: JSON;
+
+  v_temas_propuestos: Array<Tema>;
+  boliche: Boliche;
+  location: Location;
+
+  constructor(private navCtrl: NavController,
+              private navParams: NavParams, 
+              private alertCtrl: AlertController,
+              private _errorManangerService: errorManangerService,
+              private _temaService: temaService,
+              private _votoService: votoService) {
+    this.boliche  = navParams.get("boliche");
+    this.location = navParams.get("location");
+  }
 
   ngOnInit() {
-    this.setItems();
-    //this.setSubItems();
+    this.setTemasActuales();
   }
 
-  setItems() {
-    this.items = [  'Natti Natasha x Ozuna - Criminal' , 'Rombai - Una y Otra Vez ✖',
-     'J Balvin, Willy William - Mi Gente', 'Wisin - Escápate Conmigo ft. Ozuna',
-     'Chris Jeday - Ahora Dice ft. J. Balvin, Ozuna, Arcángel,', 'Kungs vs Cookin’ on 3 Burners - This Girl',
-     'Shakira - Me Enamoré', 'Shakira - Chantaje ft. Maluma',
-     'Becky G - Mayores ft. Bad Bunny', 'Danny Ocean - Me Rehúso',
-     'Farruko, Bad Bunny, Rvssian - Krippy Kush', 'Maluma - Borro casette '];
+  setTemasActuales(){
+    this._temaService.getTemasPropuestos(this.boliche.id, this.location).subscribe(temas_propuestos => {
+      for (var i = 0; i < temas_propuestos.length; i++) {
+        this.v_temas_propuestos.push(temas_propuestos[i]);
+      }
+    },
+    error => this._errorManangerService.threatError(error))
   }
 
-  // setSubItems() {
-  //   this.subitems = ['Cuatro Babys ft. Noriel, Bryant Myers, Juhn',
-  //                    ' Mi Gente', ' Me Rehúso', ' Krippy Kush'];
-  // }
-
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, 
-    public alertCtrl: AlertController) {
+  votarTemaPropuesto(id_tema) {
+    const voto: Voto = {
+      id_boliche: this.boliche.id,
+      id_tema: id_tema,
+      tipo_voto: "like"
+    };
+    this._votoService.postVoto(voto, this.boliche.id, this.location).subscribe(voto => {
+      if(voto.length > 0){
+        let alert = this.alertCtrl.create({
+          subTitle: 'Su sugerencia ha sido enviada correctamente!',
+          buttons : ['OK']
+        });
+        console.log('sugerencia de ' + id_tema + 'enviada');
+        alert.present();
+        this.navCtrl.pop();
+      }
+    },
+    error => this._errorManangerService.threatError(error))
   }
-
-  // filterItems(ev: any) {
-  //   this.setItems();
-  //   let val = ev.target.value;
-
-  //   if (val && val.trim() !== '') {
-  //     this.items = this.items.filter(function(item) {
-  //       return item.toLowerCase().includes(val.toLowerCase());
-  //     });
-  //   }
-  // }
-
-  /**
-   * 
-   * @param item trae el nombre que el usuario selecciona en la lista
-   */
-  doSomething(item) {
-    let alert = this.alertCtrl.create({
-     // title: 'Enviada!',
-      subTitle: 'Su sugerencia ha sido enviada correctamente!',
-      buttons : ['OK']
-    });
-    console.log('sugerencia de ' + item + 'enviada')
-    
-  // let path = "http://localhost:8081/sendsug?lat=" + this.lat + "&lon=" + this.lon + "&tema=" + item ; // cambiar url 
-  // console.log(path);
-  
-  // let encodedPath = encodeURI(path);
-  // let timeoutMS = 10000;
-  // this.http.get(encodedPath)
-  //     .timeout(timeoutMS)
-  //     .map(res => res.json()).subscribe(data => {
-  //         let responseData = data;
-  //         console.log(responseData);
-  //         //this.navCtrl.push(SuggestPage);
-  //     },
-  //     err => {
-  //         console.log('error in send voto');
-  //     });
-
-    alert.present();
-   // this.navCtrl.push(HomePage);
-    this.navCtrl.pop();
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SuggestPage');
-  }
-
-  
 }
 
 
