@@ -124,3 +124,24 @@ class MySqlRepo:
             raise exception.InternalServerError("fallo insertar_like")
         return result
 
+
+
+    def insertar_propuesta(self, id_boliche, id_tema):
+
+        # print "repo insertar_boliches, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
+        result = []
+        try:
+            cursor = self.cnx.cursor()
+            query = "INSERT INTO votos_propuestas (id_boliche, id_tema) VALUES (%s,%s)"
+            values = (id_boliche,id_tema)
+            cursor.execute(query,values)
+            self.cnx.commit()
+            cursor.close()
+            respuesta = {"code":"200", "title":"OK", "detail":"se pudo insertar en la base de datos"}
+            result.append(respuesta)
+        except pymysql.Error as err:
+            print err
+            raise exception.InternalServerError("fallo insertar_propuesta")
+
+
+        return [respuesta]

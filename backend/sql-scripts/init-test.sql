@@ -30,11 +30,43 @@ INSERT INTO likes (id_boliche, id_tema, tipo_like)
 VALUES (1, 1, "like");
 
 
-INSERT INTO temas_boliches (id_boliche, id_tema)
-VALUES (1, 1);
+
 
 INSERT INTO temas_boliches (id_boliche, id_tema)
 VALUES (1, 1);
 
 INSERT INTO temas_boliches (id_boliche, id_tema)
 VALUES (1, 1);
+
+INSERT INTO temas_boliches (id_boliche, id_tema)
+VALUES (1, 1);
+
+
+
+
+INSERT INTO temas_propuestos (id, nombre)
+VALUES (1, "tema1");
+
+INSERT INTO temas_propuestos (id, nombre)
+VALUES (2, "tema2");
+
+INSERT INTO temas_propuestos (id, nombre)
+VALUES (3, "tema3");
+
+
+
+
+INSERT INTO votos_propuestas (id_boliche, id_tema)
+VALUES (1, 1);
+
+INSERT INTO votos_propuestas (id_boliche, id_tema)
+VALUES (1, 2);
+
+INSERT INTO votos_propuestas (id_boliche, id_tema)
+VALUES (1, 3);
+
+INSERT INTO votos_propuestas (id_boliche, id_tema)
+VALUES (2, 1);
+
+INSERT INTO votos_propuestas (id_boliche, id_tema)
+VALUES (3, 1);
