@@ -53,3 +53,7 @@ class Service:
     def insertar_like(self, id_boliche, id_tema, tipo_like):
         response = self.repo.insertar_like(id_boliche, id_tema, tipo_like)
         return response
+
+    def insertar_propuesta(self, id_boliche, id_tema):
+        response = self.repo.insertar_propuesta(id_boliche, id_tema)
+        return response

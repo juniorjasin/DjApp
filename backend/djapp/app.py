@@ -5,6 +5,7 @@ import json
 from handlers import boliches
 from handlers import tema_actual
 from handlers import likes
+from handlers import propuestas
 from decorators.decorador import my_decorator
 import logging
 app = Bottle()
@@ -21,51 +22,91 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-# API 6 
-@app.route('/boliches', method="POST")
-@my_decorator
-def insertar_boliche():        
-    logger.debug("hola que tal")
-    a = boliches.BolichesHandler(request)
-    res = a.post()
-    response.headers['Content-Type'] = 'application/json'
-    return json.dumps(res)
+@app.hook('after_request')
+def enable_cors():
+    """
+    You need to add some headers to each request.
+    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
+    """
+    print "enable_cors"
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token, X-LAT, X-LON'
 
-@app.route('/boliches', method="GET")
+
+
+# API 6 
+@app.route('/boliches', method=['POST', 'OPTIONS'])
+@my_decorator
+def insertar_boliche():
+    if request.method == 'OPTIONS':
+        return 
+    else:
+        a = boliches.BolichesHandler(request)
+        res = a.post()
+        response.headers['Content-Type'] = 'application/json'
+        return json.dumps(res)
+
+@app.route('/boliches', method=['GET', 'OPTIONS'])
 @my_decorator
 def consultar_boliches():
-    a = boliches.BolichesHandler(request)
-    b = a.get()
-    response.headers['Content-Type'] = 'application/json'
-    return json.dumps(b)
+    if request.method == 'OPTIONS':
+        return 
+    else:
+        a = boliches.BolichesHandler(request)
+        b = a.get()
+        response.headers['Content-Type'] = 'application/json'
+        return json.dumps(b)
 
 
 #API 7
-@app.route('/boliches/<id_boliche>/tema_actual', method="GET")
+@app.route('/boliches/<id_boliche>/tema_actual', method=['GET', 'OPTIONS'])
 @my_decorator
 def consultar_tema_actual(id_boliche):
-    a = tema_actual.TemaActualHandler(request)
-    b = a.get(id_boliche)
-    response.headers['Content-Type'] = 'application/json'
-    return json.dumps(b)
+
+    if request.method == 'OPTIONS':
+        return 
+    else:
+        a = tema_actual.TemaActualHandler(request)
+        b = a.get(id_boliche)
+        response.headers['Content-Type'] = 'application/json'
+        return json.dumps(b)
 
 
-@app.route('/boliches/<id_boliche>/tema_actual', method="POST")
+@app.route('/boliches/<id_boliche>/tema_actual', method=['POST', 'OPTIONS'])
 @my_decorator
-def insertar_actual(id_boliche):        
-    a = tema_actual.TemaActualHandler(request)
-    res = a.post(id_boliche)
-    response.headers['Content-Type'] = 'application/json'
-    return json.dumps(res)
+def insertar_actual(id_boliche):
+    if request.method == 'OPTIONS':
+        return 
+    else:        
+        a = tema_actual.TemaActualHandler(request)
+        res = a.post(id_boliche)
+        response.headers['Content-Type'] = 'application/json'
+        return json.dumps(res)
 
 #API 8 
-@app.route('/likes', method="POST")
+@app.route('/likes', method=['POST', 'OPTIONS'])
 @my_decorator
-def insertar_actual():        
-    a = likes.LikesHandler(request)
-    res = a.post()
-    response.headers['Content-Type'] = 'application/json'
-    return json.dumps(res)
+def insertar_actual():
+    if request.method == 'OPTIONS':
+        return 
+    else:        
+        a = likes.LikesHandler(request)
+        res = a.post()
+        response.headers['Content-Type'] = 'application/json'
+        return json.dumps(res)
+
+# API 10
+@app.route('/propuesta', method=['POST', 'OPTIONS'])
+@my_decorator
+def guardar_propuesta():
+    if request.method == 'OPTIONS':
+        return 
+    else:
+        a = propuestas.PropuestasHandler(request)
+        res = a.post()
+        response.headers['Content-Type'] = 'application/json'
+        return json.dumps(res)
 
 
 run(app, host='0.0.0.0', port=LISTEN_PORT, reloader=True)
