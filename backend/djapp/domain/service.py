@@ -43,8 +43,8 @@ class Service:
 
     def obtener_tema_actual(self, id_boliche):
         # print "self.repo", self.repo
-        temas = self.repo.obtener_tema_actual(id_boliche)
-        return temas
+        response = self.repo.obtener_tema_actual(id_boliche)           
+        return response
 
     def insertar_tema_actual(self,nombre,lat,lon):
         response = self.repo.insertar_tema_actual(nombre,lat,lon)
@@ -52,4 +52,8 @@ class Service:
 
     def insertar_like(self, id_boliche, id_tema, tipo_like):
         response = self.repo.insertar_like(id_boliche, id_tema, tipo_like)
+        return response
+
+    def insertar_propuesta(self, id_boliche, id_tema):
+        response = self.repo.insertar_propuesta(id_boliche, id_tema)
         return response

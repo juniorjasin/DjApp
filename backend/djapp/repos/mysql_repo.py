@@ -1,32 +1,34 @@
 import pymysql
 import datetime
+import os
+from util import exception
 
-mysql_config = {
-    'host': 'localhost',
-    'db': 'djapp',
-    'user': 'dev',
-    'passwd': 'changeme'
-}
+# mysql_config = {
+#     'host': 'localhost',
+#     'db': 'djapp',
+#     'user': 'dev',
+#     'passwd': 'changeme'
+# }
 
-"""
+# """
 mysql_config = {
     'host': os.environ['MYSQL_ENDPOINT'],
     'db': os.environ['MYSQL_DATABASE'],
     'user': os.environ['MYSQL_USER'],
-    'passwd': os.environ['MYSQL-PASSWORD']
+    'passwd': os.environ['MYSQL_PASSWORD']
     }
-"""
+# """
 
 class MySqlRepo:
     def __init__(self):
         self.cnx=None
         try:        
+            print mysql_config
             self.cnx = pymysql.connect(**mysql_config)    
             print self.cnx    
 
         except pymysql.Error as err:
-            msg = "Failed init database: {}".format(err)
-            print msg
+            raise exception.InternalServerError("fallo conexion con base de datos")
         except Exception as ex:
             pass
 
@@ -49,11 +51,13 @@ class MySqlRepo:
                     boliches.append(boliche)
         except pymysql.Error as err:
             msg = "Failed init database: {}".format(err)
+            raise exception.InternalServerError("fallo query obtener_boliches")
         return boliches
     
     def insertar_boliche(self,nombre,lat,lon):
         # print "repo insertar_boliches, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
-        ret = {"status":"Ok"}
+        result = []
+
         try:
             cursor = self.cnx.cursor()
             query = "INSERT INTO boliches (nombre,latitud,longitud) VALUES (%s,%s,%s)"
@@ -62,9 +66,13 @@ class MySqlRepo:
             cursor.execute(query,values)
             self.cnx.commit()
             cursor.close()
+            respuesta = {"code":"200", "title":"OK", "detail":"se pudo insertar en la base de datos"}
+            result.append(respuesta)
         except pymysql.Error as err:
-            ret = {}
-        return ret
+            # error = {"code":"400", "title":"FAIL", "detail":"No se pudo insertar en la base de datos"}
+            # result.append(error)
+            raise exception.InternalServerError("fallo insertar_boliche")
+        return result
 
     
     # notar que puede retornar el tema con fecha mas actual pero hay que verificar que corresponda al
@@ -72,20 +80,24 @@ class MySqlRepo:
     def obtener_tema_actual(self, id_boliche):
         
         # print "repo obtener_tema_actual"
-        temas = {}
-        cursor = self.cnx.cursor()
-        query = "SELECT temas.id, temas.nombre FROM  (SELECT id_tema FROM temas_boliches WHERE id_boliche = {} ORDER BY id DESC LIMIT 1) as q JOIN temas ON q.id_tema = temas.id".format(id_boliche)
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        # print rows
-        # print type(rows)
-        cursor.close()
+        temas = []
+        try:
+            cursor = self.cnx.cursor()
+            query = "SELECT temas.id, temas.nombre FROM  (SELECT id_tema FROM temas_boliches WHERE id_boliche = {} ORDER BY id DESC LIMIT 1) as q JOIN temas ON q.id_tema = temas.id".format(id_boliche)
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            # print rows
+            # print type(rows)
+            cursor.close()
 
-        for row in rows:
-            temas = {"id":row[0],"nombre":row[1]}
-        #   temas.append(tema)
-        #   pass
-        
+            for row in rows:
+                tema = {"id":row[0],"nombre":row[1]}
+                temas.append(tema)
+            #   temas.append(tema)
+            #   pass
+        except pymysql.Error as err:
+             raise exception.InternalServerError("fallo obtener_tema_actual")
+
         return temas
 
     def insertar_tema_actual(self,nombre,lat,lon):
@@ -93,11 +105,9 @@ class MySqlRepo:
         return {"status":"Ok"}
 
 
-
-
     def insertar_like(self,id_boliche,id_tema, tipo_like):
         # print "repo insertar_boliches, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
-        ret = {"status":"Ok"}
+        result = []
         try:
             cursor = self.cnx.cursor()
             query = "INSERT INTO likes (id_boliche, id_tema, fecha_hora, tipo_like) VALUES (%s,%s,%s,%s)"
@@ -106,7 +116,32 @@ class MySqlRepo:
             cursor.execute(query,values)
             self.cnx.commit()
             cursor.close()
+            respuesta = {"code":"200", "title":"OK", "detail":"se pudo insertar en la base de datos"}
+            result.append(respuesta)
         except pymysql.Error as err:
-            ret = {}
-        return ret
+            # error = {"code":"400", "title":"FAIL", "detail":"No se pudo insertar en la base de datos"}
+            # result.append(error)
+            raise exception.InternalServerError("fallo insertar_like")
+        return result
 
+
+
+    def insertar_propuesta(self, id_boliche, id_tema):
+
+        # print "repo insertar_boliches, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
+        result = []
+        try:
+            cursor = self.cnx.cursor()
+            query = "INSERT INTO votos_propuestas (id_boliche, id_tema) VALUES (%s,%s)"
+            values = (id_boliche,id_tema)
+            cursor.execute(query,values)
+            self.cnx.commit()
+            cursor.close()
+            respuesta = {"code":"200", "title":"OK", "detail":"se pudo insertar en la base de datos"}
+            result.append(respuesta)
+        except pymysql.Error as err:
+            print err
+            raise exception.InternalServerError("fallo insertar_propuesta")
+
+
+        return [respuesta]

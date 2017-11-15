@@ -1,40 +1,28 @@
 version: "2.0"
 services:
-
-    svc-temas:
-        build: svc-temas
-        ports:
-            - 8081:8081
-        depends_on:
-            - mysql
-        environment:
-            MYSQL_ENDPOINT: mysql
-            MYSQL_USER: dev
-            MYSQL_PASSWORD: changeme
-            MYSQL_DATABASE: djapp
-            PYTHONUNBUFFERED: 0  # agrego esto para ver los prints de python en la terminal
-
-    svc-likes:
-        build: svc-likes
-        ports:
-            - 8088:8088
-        depends_on:
-            - mysql
-        environment:
-            MYSQL_ENDPOINT: mysql
-            MYSQL_USER: dev
-            MYSQL_PASSWORD: changeme
-            MYSQL_DATABASE: djapp
-            PYTHONUNBUFFERED: 0  # agrego esto para ver los prints de python en la terminal
        
+    djapp:
+        build: .
+        ports:
+            - 9090:9090
+        environment:
+            MYSQL_ENDPOINT: ${MYSQL_ENDPOINT}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+        depends_on:
+            - mysql
+
     mysql:
         image: mysql:5.7
         ports:
             - 3307:3306
         volumes:
             - ./database:/var/lib/mysql
+
         environment:
-            MYSQL_ROOT_PASSWORD: changeme
-            MYSQL_USER: dev
-            MYSQL_PASSWORD: changeme
-            MYSQL_DATABASE: djapp
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+        
