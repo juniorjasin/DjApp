@@ -1,7 +1,6 @@
 from domain import service
 from repos import mysql_repo
 from util import exception
-
 import json
 
 # TODO: verificar en el caso que no vengan los parametros lat y lon porque sino rompe

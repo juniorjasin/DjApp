@@ -15,7 +15,8 @@ mysql_config = {
     'host': os.environ['MYSQL_ENDPOINT'],
     'db': os.environ['MYSQL_DATABASE'],
     'user': os.environ['MYSQL_USER'],
-    'passwd': os.environ['MYSQL_PASSWORD']
+    'passwd': os.environ['MYSQL_PASSWORD'],
+    'port': 3307
     }
 # """
 
@@ -28,6 +29,8 @@ class MySqlRepo:
             print self.cnx    
 
         except pymysql.Error as err:
+            print 'error bd ****'
+            print err
             raise exception.InternalServerError("fallo conexion con base de datos")
         except Exception as ex:
             pass
@@ -145,3 +148,27 @@ class MySqlRepo:
 
 
         return [respuesta]
+
+    def obtener_temas_propuestos(self, id_boliche):        
+        temas_propuestos = []
+        cantidad_temas = 4
+        try:        
+            cursor = self.cnx.cursor()
+            query = "SELECT id, nombre FROM temas ORDER BY RAND() LIMIT " + str(cantidad_temas)
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            self.cnx.commit()
+            cursor.close()
+            if rows == None:            
+                return temas_propuestos
+            else:
+                for row in rows:
+                    tema_propuesto = {"id":row[0],"nombre":row[1]}
+                    temas_propuestos.append(tema_propuesto)
+        except pymysql.Error as err:
+            msg = "Failed init database: {}".format(err)
+            raise exception.InternalServerError("fallo conexion con base de datos")
+        return temas_propuestos
+    
+    def insertar_tema_propuesto(self,nombre_tema,id_boliche):
+        pass

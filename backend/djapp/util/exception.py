@@ -25,6 +25,15 @@ class BadRequest(InfoException):
 
         super(BadRequest, self).__init__(self.info)
 
+class Unauthorized(InfoException):
+    def __init__(self, context):
+        self.info = dict()
+        self.info[DEVELOPER_MESSAGE_KEY] = 'unauthorized developer'
+        self.info[USER_MESSAGE_KEY] = 'No tiene autorizacion para acceder al recurso.'
+        self.info[CONTEXT_KEY] = context
+
+        super(Unauthorized, self).__init__(self.info)
+
 class NotFound(InfoException):
     def __init__(self, context):
         self.info = dict()
