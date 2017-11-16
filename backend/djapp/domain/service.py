@@ -61,3 +61,11 @@ class Service:
     def obtener_estadisticas(self, id_boliche):
         response = self.repo.obtener_estadisticas(id_boliche)
         return response
+
+    def listar_temas_propuestos(self, id_boliche):
+        temas_propuestos = self.repo.obtener_temas_propuestos(id_boliche)
+        return temas_propuestos
+
+    def insertar_tema_propuesto(self,nombre_tema,id_boliche):
+        response = self.repo.insertar_tema_propuesto(nombre_tema,id_boliche)
+        return response

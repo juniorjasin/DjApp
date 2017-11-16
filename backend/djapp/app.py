@@ -7,6 +7,7 @@ from handlers import tema_actual
 from handlers import likes
 from handlers import propuestas
 from handlers import estadisticas
+from handlers import temas_propuestos
 from decorators.decorador import my_decorator
 import logging
 app = Bottle()
@@ -96,6 +97,17 @@ def insertar_actual():
         res = a.post()
         response.headers['Content-Type'] = 'application/json'
         return json.dumps(res)
+
+# API 9
+@app.route('/temas_propuestos/<boliche_id>', method= ['GET', 'OPTIONS'])
+@my_decorator
+def consultar_boliches(boliche_id):
+    if request.method == 'OPTIONS':
+        return 
+    else:
+        handler = temas_propuestos.TemasPropuestosHandler(request)
+        res = handler.get(boliche_id)
+        return res
 
 # API 10
 @app.route('/propuesta', method=['POST', 'OPTIONS'])
