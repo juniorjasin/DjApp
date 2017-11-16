@@ -1,6 +1,7 @@
 import pymysql
 import datetime
 import os
+import logging
 from util import exception
 
 # mysql_config = {
@@ -9,6 +10,16 @@ from util import exception
 #     'user': 'dev',
 #     'passwd': 'changeme'
 # }
+
+
+logger = logging.getLogger('app')
+logger.setLevel(logging.DEBUG)
+logger.propagate = False
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 # """
 mysql_config = {
@@ -28,11 +39,13 @@ class MySqlRepo:
             print self.cnx    
 
         except pymysql.Error as err:
+            logger.error("No se pudo conectar a la base de datos, configuracion: {}, error mysql: {}".format(mysql_config, err))
             raise exception.InternalServerError("fallo conexion con base de datos")
         except Exception as ex:
             pass
 
     def obtener_boliches(self,lat,lon):        
+        logger.debug("Comienza obtener obtener_boliches")
         # print "repo obtener_boliches, lat = {}, lon={}".format(lat,lon)
         boliches = []        
         
@@ -55,6 +68,8 @@ class MySqlRepo:
         return boliches
     
     def insertar_boliche(self,nombre,lat,lon):
+        logger.debug("Comienza obtener obtener_tema_actual")
+        logger.debug("Intenta insertar: nombre = {}, lat = {}, lon={}".format(nombre,lat,lon) )
         # print "repo insertar_boliches, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
         result = []
 
@@ -78,8 +93,8 @@ class MySqlRepo:
     # notar que puede retornar el tema con fecha mas actual pero hay que verificar que corresponda al
     # dia actual, sino puede ser el ultimo que se inserto otro dia
     def obtener_tema_actual(self, id_boliche):
-        
-        # print "repo obtener_tema_actual"
+        logger.debug("Comienza obtener obtener_tema_actual")
+
         temas = []
         try:
             cursor = self.cnx.cursor()
@@ -101,7 +116,8 @@ class MySqlRepo:
         return temas
 
     def insertar_tema_actual(self,nombre,lat,lon):
-        print "repo insertar_tema_actual, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
+        logger.debug("Comienza obtener insertar_propuesta")
+        logger.debug("Intento insertar nombre = {}, lat = {}, lon={}".format(nombre,lat,lon) )
         return {"status":"Ok"}
 
 
@@ -128,6 +144,7 @@ class MySqlRepo:
 
     def insertar_propuesta(self, id_boliche, id_tema):
 
+        logger.debug("Comienza obtener insertar_propuesta")
         # print "repo insertar_boliches, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
         result = []
         try:
@@ -143,5 +160,94 @@ class MySqlRepo:
             print err
             raise exception.InternalServerError("fallo insertar_propuesta")
 
-
         return [respuesta]
+
+
+
+    def obtener_estadisticas(self, id_boliche):
+        
+        # Retorno
+        '''
+        {
+            "estadisticas": {
+                "likes": [
+                    {
+                        "cantidad": 3,
+                        "id_boliche": "1",
+                        "id_tema": 1,
+                        "nombre": "tema1",
+                        "tipo": "like"
+                    },
+                    {
+                        "cantidad": 1,
+                        "id_boliche": "1",
+                        "id_tema": 1,
+                        "nombre": "tema1",
+                        "tipo": "not-like"
+                    }
+                ],
+                "prouestas": [
+                    {
+                        "cantidad": 1,
+                        "id_boliche": "1",
+                        "id_tema": 1,
+                        "nombre": "tema1"
+                    },
+                    {
+                        "cantidad": 1,
+                        "id_boliche": "1",
+                        "id_tema": 2,
+                        "nombre": "tema2"
+                    },
+                    {
+                        "cantidad": 1,
+                        "id_boliche": "1",
+                        "id_tema": 3,
+                        "nombre": "tema3"
+                    }
+                ]
+            }
+        }
+        '''
+
+        likes = []
+        propuestas = []
+        
+        logger.debug("Comienza obtener_estadisticas")
+        try:
+
+            # Consulta: likes
+            cursor = self.cnx.cursor()
+            query = "SELECT COUNT(*), temas.nombre, tipo_like, id_tema FROM likes JOIN temas on likes.id_tema = temas.id WHERE id_boliche = %s GROUP BY id_tema, temas.nombre, id_boliche, tipo_like"
+            values = (id_boliche)
+            cursor.execute(query,values)
+            self.cnx.commit()   
+            
+            rows = cursor.fetchall()
+            logger.debug("tupla de likes que obtengo de la base de datos: {}".format(rows))
+            for row in rows:
+                like_tema = {"nombre":row[1], "id_tema":row[3], "id_boliche":id_boliche,"tipo":row[2], "cantidad":row[0]}
+                likes.append(like_tema)
+            logger.debug("Array de likes: {}".format(likes))
+
+            # Consulta: propuestas
+            query = "SELECT COUNT(*), temas_propuestos.nombre, votos_propuestas.id_tema FROM votos_propuestas JOIN temas_propuestos on votos_propuestas.id_tema = temas_propuestos.id WHERE id_boliche = %s GROUP BY votos_propuestas.id_tema, temas_propuestos.nombre, id_boliche"
+            values = (id_boliche)
+            cursor.execute(query,values)
+            self.cnx.commit()  
+
+            rows = cursor.fetchall()
+            logger.debug("tupla de propuestas que obtengo de la base de datos: {}".format(rows))
+            for row in rows:
+                propuesta_tema = {"nombre":row[1], "id_tema":row[2], "id_boliche":id_boliche, "cantidad":row[0]}
+                propuestas.append(propuesta_tema)
+            logger.debug("Array de propuestas: {}".format(propuestas))
+
+
+            cursor.close()
+
+        except pymysql.Error as err:
+             logger.error("fallo una de las query para obtener las estadisticas")
+             raise exception.InternalServerError("fallo obtener estadisticas")
+
+        return {"likes":likes, "prouestas":propuestas}

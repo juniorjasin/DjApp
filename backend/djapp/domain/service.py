@@ -57,3 +57,7 @@ class Service:
     def insertar_propuesta(self, id_boliche, id_tema):
         response = self.repo.insertar_propuesta(id_boliche, id_tema)
         return response
+
+    def obtener_estadisticas(self, id_boliche):
+        response = self.repo.obtener_estadisticas(id_boliche)
+        return response

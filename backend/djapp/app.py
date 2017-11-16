@@ -6,6 +6,7 @@ from handlers import boliches
 from handlers import tema_actual
 from handlers import likes
 from handlers import propuestas
+from handlers import estadisticas
 from decorators.decorador import my_decorator
 import logging
 app = Bottle()
@@ -107,6 +108,20 @@ def guardar_propuesta():
         res = a.post()
         response.headers['Content-Type'] = 'application/json'
         return json.dumps(res)
+
+# --------------------------- API DJ --------------------------------------
+@app.route('/estadisticas/<id_boliche>', method=['GET', 'OPTIONS'])
+@my_decorator
+def guardar_propuesta(id_boliche):
+    if request.method == 'OPTIONS':
+        return 
+    else:
+        a = estadisticas.EstadisticasHandler(request)
+        res = a.get(id_boliche)
+        response.headers['Content-Type'] = 'application/json'
+        return json.dumps(res)
+
+
 
 
 run(app, host='0.0.0.0', port=LISTEN_PORT, reloader=True)
