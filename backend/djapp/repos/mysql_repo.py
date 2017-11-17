@@ -96,7 +96,7 @@ class MySqlRepo:
     def obtener_tema_actual(self, id_boliche):
         logger.debug("Comienza obtener obtener_tema_actual")
 
-        temas = []
+        tema = []
         try:
             cursor = self.cnx.cursor()
             query = "SELECT temas.id, temas.nombre FROM  (SELECT id_tema FROM temas_boliches WHERE id_boliche = {} ORDER BY id DESC LIMIT 1) as q JOIN temas ON q.id_tema = temas.id".format(id_boliche)
@@ -107,14 +107,15 @@ class MySqlRepo:
             cursor.close()
 
             for row in rows:
-                tema = {"id":row[0],"nombre":row[1]}
-                temas.append(tema)
-            #   temas.append(tema)
-            #   pass
+                t = {"id":row[0],"nombre":row[1]}
+                tema.append(t)
+            logger.debug("Array de likes: {}".format(tema))
+
         except pymysql.Error as err:
+             logger.error("fallo la consulta en obtener_tema_actual")
              raise exception.InternalServerError("fallo obtener_tema_actual")
 
-        return temas
+        return tema
 
     def insertar_tema_actual(self,nombre,lat,lon):
         logger.debug("Comienza obtener insertar_propuesta")
@@ -210,26 +211,46 @@ class MySqlRepo:
             }
         }
         '''
+        logger.debug("Comienza obtener_estadisticas")
 
-        likes = []
+        likes_tema_actual = []
         propuestas = []
         
-        logger.debug("Comienza obtener_estadisticas")
+        # como hago esto en menos pasos ?
+        ta = self.obtener_tema_actual(id_boliche)
+        tema_actual = ta[0]
+        id_tema_actual = tema_actual["id"]
+        logger.debug("obtener_estadisticas: tema_actual: {} en boliche: {}".format(tema_actual["id"], id_boliche))
+
         try:
 
             # Consulta: likes
             cursor = self.cnx.cursor()
-            query = "SELECT COUNT(*), temas.nombre, tipo_like, id_tema FROM likes JOIN temas on likes.id_tema = temas.id WHERE id_boliche = %s GROUP BY id_tema, temas.nombre, id_boliche, tipo_like"
-            values = (id_boliche)
+            query = "SELECT COUNT(*), temas.nombre, tipo_like, id_tema FROM likes JOIN temas on likes.id_tema = temas.id WHERE id_boliche = %s AND id_tema = %s GROUP BY id_tema, temas.nombre, id_boliche, tipo_like"
+            values = (id_boliche, id_tema_actual)
             cursor.execute(query,values)
             self.cnx.commit()   
             
             rows = cursor.fetchall()
             logger.debug("tupla de likes que obtengo de la base de datos: {}".format(rows))
+            
+            cant_likes = 0
+            cant_not_likes = 0
+            nombre = ""
+
             for row in rows:
-                like_tema = {"nombre":row[1], "id_tema":row[3], "id_boliche":id_boliche,"tipo":row[2], "cantidad":row[0]}
-                likes.append(like_tema)
-            logger.debug("Array de likes: {}".format(likes))
+
+                nombre = row[1]
+                if row[2] == 'like':
+                    cant_likes = row[0]
+                else:
+                    cant_not_likes = row[0]
+
+                # like_tema = {"nombre":row[1], "id_tema":row[3], "id_boliche":id_boliche,"tipo":row[2], "cantidad":row[0]}
+                # likes_tema_actual.append(like_tema)
+
+            likes_tema_actual = {"id_tema":id_tema_actual, "nombre": nombre, "id_boliche":id_boliche, "likes":cant_likes, "not-like":cant_not_likes}
+            logger.debug("Array de likes del tema actual: {}".format(likes_tema_actual))
 
             # Consulta: propuestas
             query = "SELECT COUNT(*), temas_propuestos.nombre, votos_propuestas.id_tema FROM votos_propuestas JOIN temas_propuestos on votos_propuestas.id_tema = temas_propuestos.id WHERE id_boliche = %s GROUP BY votos_propuestas.id_tema, temas_propuestos.nombre, id_boliche"
@@ -251,7 +272,7 @@ class MySqlRepo:
              logger.error("fallo una de las query para obtener las estadisticas")
              raise exception.InternalServerError("fallo obtener estadisticas")
 
-        return {"likes":likes, "prouestas":propuestas}
+        return {"likes":likes_tema_actual, "prouestas":propuestas}
 
     def obtener_temas_propuestos(self, id_boliche):        
         temas_propuestos = []
