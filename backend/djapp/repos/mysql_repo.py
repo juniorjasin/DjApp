@@ -216,7 +216,7 @@ class MySqlRepo:
                 # like_tema = {"nombre":row[1], "id_tema":row[3], "id_boliche":id_boliche,"tipo":row[2], "cantidad":row[0]}
                 # likes_tema_actual.append(like_tema)
 
-            likes_tema_actual = {"id_tema":id_tema_actual, "nombre": nombre, "id_boliche":id_boliche, "likes":cant_likes, "not-like":cant_not_likes}
+            likes_tema_actual = {"id_tema":id_tema_actual, "nombre": nombre, "id_boliche":id_boliche, "likes":cant_likes, "not_like":cant_not_likes}
             logger.debug("Array de likes del tema actual: {}".format(likes_tema_actual))
 
             # Consulta: propuestas
