@@ -75,14 +75,15 @@ def consultar_tema_actual(id_boliche):
         return json.dumps(b)
 
 
+#API 11
 @app.route('/boliches/<id_boliche>/tema_actual', method=['POST', 'OPTIONS'])
 @my_decorator
 def insertar_actual(id_boliche):
     if request.method == 'OPTIONS':
         return 
-    else:        
-        a = tema_actual.TemaActualHandler(request)
-        res = a.post(id_boliche)
+    else:
+        handler = tema_actual.TemaActualHandler(request)
+        res = handler.post(id_boliche)
         response.headers['Content-Type'] = 'application/json'
         return json.dumps(res)
 
