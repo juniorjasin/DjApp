@@ -168,49 +168,6 @@ class MySqlRepo:
 
     def obtener_estadisticas(self, id_boliche):
         
-        # Retorno
-        '''
-        {
-            "estadisticas": {
-                "likes": [
-                    {
-                        "cantidad": 3,
-                        "id_boliche": "1",
-                        "id_tema": 1,
-                        "nombre": "tema1",
-                        "tipo": "like"
-                    },
-                    {
-                        "cantidad": 1,
-                        "id_boliche": "1",
-                        "id_tema": 1,
-                        "nombre": "tema1",
-                        "tipo": "not-like"
-                    }
-                ],
-                "prouestas": [
-                    {
-                        "cantidad": 1,
-                        "id_boliche": "1",
-                        "id_tema": 1,
-                        "nombre": "tema1"
-                    },
-                    {
-                        "cantidad": 1,
-                        "id_boliche": "1",
-                        "id_tema": 2,
-                        "nombre": "tema2"
-                    },
-                    {
-                        "cantidad": 1,
-                        "id_boliche": "1",
-                        "id_tema": 3,
-                        "nombre": "tema3"
-                    }
-                ]
-            }
-        }
-        '''
         logger.debug("Comienza obtener_estadisticas")
 
         likes_tema_actual = []
@@ -272,7 +229,7 @@ class MySqlRepo:
              logger.error("fallo una de las query para obtener las estadisticas")
              raise exception.InternalServerError("fallo obtener estadisticas")
 
-        return {"likes":likes_tema_actual, "prouestas":propuestas}
+        return {"tema_actual":likes_tema_actual, "prouestas":propuestas}
 
     def obtener_temas_propuestos(self, id_boliche):        
         temas_propuestos = []
