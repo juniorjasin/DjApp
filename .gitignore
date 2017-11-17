@@ -1,2 +1,3 @@
 backend/database/
 backend/.env
+backend/*.pyc

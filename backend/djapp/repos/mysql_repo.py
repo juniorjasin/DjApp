@@ -117,10 +117,20 @@ class MySqlRepo:
 
         return tema
 
-    def insertar_tema_actual(self,nombre,lat,lon):
-        logger.debug("Comienza obtener insertar_propuesta")
-        logger.debug("Intento insertar nombre = {}, lat = {}, lon={}".format(nombre,lat,lon) )
-        return {"status":"Ok"}
+    def insertar_tema_actual(self,id_boliche, id_tema):
+        result = []
+        try:
+            cursor = self.cnx.cursor()
+            query = "INSERT INTO temas_boliches (id_boliche, id_tema) VALUES (%s,%s)"
+            values = (id_boliche,id_tema)
+            cursor.execute(query,values)
+            self.cnx.commit()
+            cursor.close()
+            respuesta = {"code":"200", "title":"OK", "detail":"se pudo insertar el tema en la base de datos"}
+            result.append(respuesta)
+        except pymysql.Error as err:
+            raise exception.InternalServerError("fallo insertar_tema_actual")
+        return result
 
 
     def insertar_like(self,id_boliche,id_tema, tipo_like):

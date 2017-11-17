@@ -46,8 +46,8 @@ class Service:
         response = self.repo.obtener_tema_actual(id_boliche)           
         return response
 
-    def insertar_tema_actual(self,nombre,lat,lon):
-        response = self.repo.insertar_tema_actual(nombre,lat,lon)
+    def insertar_tema_actual(self,id_boliche, id_tema):
+        response = self.repo.insertar_tema_actual(id_boliche, id_tema)
         return response
 
     def insertar_like(self, id_boliche, id_tema, tipo_like):
