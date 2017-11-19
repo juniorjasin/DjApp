@@ -117,18 +117,34 @@ class MySqlRepo:
 
         return tema
 
-    def insertar_tema_actual(self,id_boliche, id_tema):
+    def insertar_tema_actual(self,id_boliche, nombre_tema):
         result = []
         try:
-            cursor = self.cnx.cursor()
-            query = "INSERT INTO temas_boliches (id_boliche, id_tema) VALUES (%s,%s)"
-            values = (id_boliche,id_tema)
-            cursor.execute(query,values)
-            self.cnx.commit()
-            cursor.close()
+            cursor_1 = self.cnx.cursor()
+            query_1 = "SELECT id FROM temas WHERE nombre = %s"
+            cursor_1.execute(query_1,nombre_tema)
+            result_cursor_1 = cursor_1.fetchone()
+            cursor_1.close()
+            cursor_2 = self.cnx.cursor()
+            if result_cursor_1 is None:
+                query_2 = "INSERT INTO temas(nombre) values(%s)"
+                cursor_2.execute(query_2, nombre_tema)
+                id_tema_insertado = cursor_2.lastrowid 
+                query_3 = "INSERT INTO temas_boliches (id_boliche, id_tema) values(%s,%s)"
+                values_query_3 = (id_boliche, id_tema_insertado)
+                cursor_2.execute(query_3, values_query_3)
+                self.cnx.commit()
+            else:
+                query_4 = "INSERT INTO temas_boliches (id_boliche, id_tema) values(%s,%s)"
+                id_tema = result_cursor_1[0]
+                values_query_4 = (id_boliche, id_tema)
+                cursor_2.execute(query_4, values_query_4)
+                self.cnx.commit()
+            cursor_2.close()
             respuesta = {"code":"200", "title":"OK", "detail":"se pudo insertar el tema en la base de datos"}
             result.append(respuesta)
         except pymysql.Error as err:
+            print err
             raise exception.InternalServerError("fallo insertar_tema_actual")
         return result
 
