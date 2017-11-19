@@ -1,5 +1,5 @@
 create table if not exists temas (
-    id integer,
+    id integer not null AUTO_INCREMENT,
     nombre varchar(100),
     PRIMARY KEY (id)
 );

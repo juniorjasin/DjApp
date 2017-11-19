@@ -19,10 +19,10 @@ class TemaActualHandler:
     @check_authorization
     def post(self, id_boliche):
         data = self.request.json
-        if not data.get('id_tema',None):
-            raise exception.BadRequest("Falta argumento id_tema")
-        id_tema = data["id_tema"]
+        if not data.get('nombre_tema',None):
+            raise exception.BadRequest("Falta argumento nombre_tema")
+        nombre_tema = data["nombre_tema"]
         repo = mysql_repo.MySqlRepo()
         svc = service.Service(repo)
-        respuesta = svc.insertar_tema_actual(id_boliche, id_tema)
+        respuesta = svc.insertar_tema_actual(id_boliche, nombre_tema)
         return { "status":respuesta }
