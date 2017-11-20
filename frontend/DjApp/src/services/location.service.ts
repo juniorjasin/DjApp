@@ -13,12 +13,13 @@ export class locationService {
 	constructor(private geolocation: Geolocation){}
 
   	getLocation(): Observable<Location>{
-      return this.geolocation.watchPosition().map(location => this.mapPosition(location));
+      return this.geolocation
+      .watchPosition()
+      .map(location => this.mapPosition(location));
   	}
 
     mapPosition(position): Location{                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-      const location: Location = {lat: null, lon: null};
-      console.log(position.coords.latitude);
+      const location: Location = {lat: undefined, lon: undefined};
       location.lat = position.coords.latitude;
       location.lon = position.coords.longitude;
       return location;

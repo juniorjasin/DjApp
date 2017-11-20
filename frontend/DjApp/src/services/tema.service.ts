@@ -12,27 +12,33 @@ import {
 @Injectable()
 export class temaService {
 
+  domain = 'http://54.86.110.165:9090';
+
 	constructor(public http: Http){}
 
   	getTemasPropuestos(id_boliche, location: Location): Observable<Tema[]>{
-      let path = '/boliches' + id_boliche + '/temas_propuestos';
+      if(id_boliche == undefined || location.lat == undefined || location.lon == undefined)
+        throw "getTemasPropuestos parámetros sin definir";
+      let path = this.domain + '/temas_propuestos/' + id_boliche;
 	    let encodedPath = encodeURI(path);
       let headers = new Headers(
         {'Content-Type': 'application/json',
-         'Latitude': location.lat,
-         'Longitude': location.lon
+         'X-LAT': location.lat,
+         'X-LON': location.lon
         });
       let options = new RequestOptions({ headers: headers });
 	   	return this.http.get(encodedPath, options).map(response => this.mapTemasPropuestos(response.json()));
   	}
 
     getTemaActual(id_boliche, location: Location): Observable<Tema []>{
-      let path = '/boliches' + id_boliche + '/tema_actual';
+      if(id_boliche == undefined || location.lat == undefined || location.lon == undefined)
+        throw "getTemaActual parámetros sin definir";
+      let path = this.domain + '/boliches/' + id_boliche + '/tema_actual';
       let encodedPath = encodeURI(path);
       let headers = new Headers(
         {'Content-Type': 'application/json',
-         'Latitude': location.lat,
-         'Longitude': location.lon
+         'X-LAT': location.lat,
+         'X-LON': location.lon
         });
       let options = new RequestOptions({ headers: headers });
       return this.http.get(encodedPath, options).map(response => this.mapTemaActual(response.json()));

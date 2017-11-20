@@ -11,10 +11,14 @@ import {
 @Injectable()
 export class bolicheService {
 
+  domain = 'http://54.86.110.165:9090';
+
 	constructor(public http: Http){}
 
   	getBoliches(location:Location): Observable<Boliche []>{
-      let path = '/boliches?lat=' + location.lat + '&lon=' + location.lon;
+      if(location.lat == undefined || location.lon == undefined)
+        throw "getBoliches parámetros sin definir";
+      let path = this.domain + '/boliches?lat=' + location.lat + '&lon=' + location.lon;
 	    let encodedPath = encodeURI(path);
 	   	return this.http.get(encodedPath).map(response => this.mapBoliche(response.json()), err => alert(err));
   	}

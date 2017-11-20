@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { SuggestPage } from '../suggest/suggest';
+import { LoadingController } from 'ionic-angular';
+import { Loading } from 'ionic-angular';
 
 //Interfaces
 import { Boliche } from '../../common/Boliche';
@@ -39,85 +41,136 @@ export class HomePage implements OnInit {
   location: Location;
   tema_actual: Tema;
 
+  isenabled:boolean=false;
+
+  //Delays
+  delay_buscarBoliche = 2000;
+  delay_buscarTemaActual = 5000;
+  delay_buscarTemaActual_catch = 2000;
+
+  //Loading inicial
+  loading:Loading;
+
+  //Flag para saber si ya voto
+  yaVoto:boolean = false;
+
   constructor(private _bolicheService: bolicheService,
               private _locationService: locationService,
               private _temaService: temaService,
               private _votoService: votoService,
               private _errorManangerService: errorManangerService,
-              private navCtrl: NavController) {
-    this.boliche = {id: null, latitud: null, longitud: null ,nombre: null};
-    this.location = {lat: null, lon: null};
-    this.tema_actual = {id: null, nombre: null};
+              private navCtrl: NavController,
+              private loadingCtrl: LoadingController) {
+    this.boliche = {id: undefined, latitud: undefined, longitud: undefined ,nombre: undefined};
+    this.location = {lat: undefined, lon: undefined};
+    this.tema_actual = {id: undefined, nombre: undefined};
+    this.loading = this.loadingCtrl.create({
+      content: 'Buscando boliche...'
+    });
   }
 
   ngOnInit() {
-  	this._locationService.getLocation().subscribe(location => {
+    console.log('ngoninit home');
+    this.mostrarLoading();
+    this.obtenerLocalizacion();
+    this.buscarBoliche();
+    this.buscarTemaActual();
+  }
+
+  private obtenerLocalizacion(){
+    this._locationService.getLocation().subscribe(location => {
         this.location.lat = location.lat;
         this.location.lon = location.lon;
-   	});
-    this.searchBoliche();
-    this.searchTemaActual();
+        console.log('latitude' + this.location.lat);
+        console.log('longitude' + this.location.lon);
+        //PRUEBA
+        this.location.lat = '-31.337485';
+        this.location.lon = '-64.256521';
+     });
   }
 
-  private searchBoliche(){
-    var IntervalID = window.setInterval(() => {
-      if(this.boliche.id == null && this.location.lat != null && this.location.lon != null)
-        this.setBoliche();
-      else
-        clearInterval(IntervalID);
-    },5000);
-  }
-
-  private setBoliche(){
-    this._bolicheService.getBoliches(this.location).subscribe(boliches => {
-      for (var i = 0; i < boliches.length; i++) {
-        this.boliche.id = boliches[i].id;
-        this.boliche.nombre = boliches[i].nombre;
-        this.boliche.latitud = boliches[i].latitud;
-        this.boliche.longitud = boliches[i].longitud;
-        this.v_nombre_boliche = this.boliche.nombre; 
-      }
-    },
-    error => this._errorManangerService.threatError(error));
-  }
-
-  private searchTemaActual(){
-    var IntervalID = window.setInterval(() => {
-      if(this.boliche.id != null)
-        this.setTemaActual();
-    },5000);
-  }
-
-  private setTemaActual(){
-    this._temaService.getTemaActual(this.boliche.id, this.location).subscribe(tema_actual => {
-      for (var i = 0; i < tema_actual.length; i++) {
-        this.tema_actual.id = tema_actual[i].id;
-        this.tema_actual.nombre = tema_actual[i].nombre;
-        this.v_nombre_tema_actual = this.tema_actual.nombre;
-      }
-    },
-    error => this._errorManangerService.threatError(error));
-  }
-
-  public sendVoto(tipo_voto){
-    const voto: Voto = {
-      id_boliche: this.boliche.id,
-      id_tema: this.tema_actual.id,
-      tipo_voto: tipo_voto
+  private buscarBoliche(){
+    try{
+      this._bolicheService.getBoliches(this.location).subscribe(boliches => {
+        if(boliches.length == 0){
+          console.log('buscarBoliche => no se encontraron boliches');
+          setTimeout(()=>{ this.buscarBoliche(); }, this.delay_buscarBoliche);
+        }
+        else{
+          for (var i = 0; i < boliches.length; i++) {
+            this.boliche.id = boliches[i].id;
+            this.boliche.nombre = boliches[i].nombre;
+            this.boliche.latitud = boliches[i].latitud;
+            this.boliche.longitud = boliches[i].longitud;
+            this.loading.dismiss();
+            this.v_nombre_boliche = this.boliche.nombre;
+            console.log('buscarBoliche => boliche encontrado ');
+            console.dir(this.boliche);
+          }
+        }
+      },
+      error => this._errorManangerService.threatError(error));
     }
-    if(this.boliche.id != null && this.tema_actual.id != null){
-    	this._votoService.postVoto(voto,this.boliche.id,this.location).subscribe(voto => {
-	      if(voto.length > 0)
-	        this.navCtrl.push(SuggestPage, {
-	          boliche: this.boliche,
-	          location: this.location
-	        });
-	    },
-	    error => this._errorManangerService.threatError(error));
+    catch(exception){
+      console.log(exception);
+      setTimeout(()=>{ this.buscarBoliche(); }, this.delay_buscarBoliche);
     }
   }
 
+  private buscarTemaActual(){
+    try{
+      this._temaService.getTemaActual(this.boliche.id, this.location).subscribe(tema_actual => {
+        for (var i = 0; i < tema_actual.length; i++) {
+          //Si cambia el tema actual, habilitar para votar
+          if(this.tema_actual.id != undefined && this.tema_actual.id != tema_actual[i].id)
+            this.yaVoto = false;
+          this.tema_actual.id = tema_actual[i].id;
+          this.tema_actual.nombre = tema_actual[i].nombre;
+          this.v_nombre_tema_actual = this.tema_actual.nombre;
+        }
+        setTimeout(()=>{ this.buscarTemaActual(); }, this.delay_buscarTemaActual);
+        console.log('buscarTemaActual success');
+      },
+      error => this._errorManangerService.threatError(error));
+    }
+    catch(exception){
+      console.log(exception);
+      setTimeout(()=>{ this.buscarTemaActual(); }, this.delay_buscarTemaActual_catch);
+    }
+  }
 
+  public enviarVoto(tipo_like){
+    if(this.yaVoto == false){
+      const voto: Voto = {
+        id_boliche: this.boliche.id,
+        id_tema: this.tema_actual.id,
+        tipo_like: tipo_like
+      }
+      try{
+        this._votoService.votarTemaActual(voto,this.boliche.id,this.location).subscribe(status => {
+          console.log('enviarVoto => se envió el voto correctamente');
+          //Ya votó
+          this.yaVoto = true;
+          this.navCtrl.push(SuggestPage, {
+              boliche: this.boliche,
+              location: this.location
+            });
+        },
+        error => this._errorManangerService.threatError(error));
+      }
+      catch(exception){
+        console.log('enviarVoto => ocurrió una excepción');
+        console.log(exception);
+        this._errorManangerService.showMessage('Ocurrió un error, reintente de nuevo.');
+      }
+    }
+    else{
+      this._errorManangerService.showMessage('Ya votaste, espera al próximo tema.');
+    }
+  }
 
+  private mostrarLoading(){
+    this.loading.present();
+  }
 }
 
