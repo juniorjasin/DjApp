@@ -1,0 +1,27 @@
+<ion-content>
+  
+      <p > Resultados </p>
+      <h1>{{v_tema_actual}}</h1>
+   
+      <canvas #doughnutCanvas></canvas>
+  
+      <p>Top sugerencias</p>
+      
+      <ion-list no-lines>
+        <button ion-item *ngFor="let tema of ranking_temas">
+          {{ tema.nombre }}
+        </button> 
+      </ion-list>
+
+      <!-- <ion-list inset>
+          <button ion-item *ngFor="let item of items" >
+            {{ item }}
+          </button>
+          <ion-item *ngFor="let tema of temas | async"> {{item}}  </ion-item>
+        </ion-list> -->
+  
+  
+      
+     
+   
+  </ion-content>

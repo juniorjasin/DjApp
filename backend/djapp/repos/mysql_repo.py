@@ -236,7 +236,7 @@ class MySqlRepo:
             logger.debug("Array de likes del tema actual: {}".format(likes_tema_actual))
 
             # Consulta: propuestas
-            query = "SELECT COUNT(*), temas_propuestos.nombre, votos_propuestas.id_tema FROM votos_propuestas JOIN temas_propuestos on votos_propuestas.id_tema = temas_propuestos.id WHERE id_boliche = %s GROUP BY votos_propuestas.id_tema, temas_propuestos.nombre, id_boliche"
+            query = "SELECT COUNT(*), temas.nombre, votos_propuestas.id_tema FROM votos_propuestas JOIN temas on votos_propuestas.id_tema = temas.id WHERE id_boliche = %s GROUP BY votos_propuestas.id_tema, temas.nombre, id_boliche"
             values = (id_boliche)
             cursor.execute(query,values)
             self.cnx.commit()  
@@ -255,7 +255,7 @@ class MySqlRepo:
              logger.error("fallo una de las query para obtener las estadisticas")
              raise exception.InternalServerError("fallo obtener estadisticas")
 
-        return {"tema_actual":likes_tema_actual, "prouestas":propuestas}
+        return {"tema_actual":likes_tema_actual, "propuestas":propuestas}
 
     def obtener_temas_propuestos(self, id_boliche):        
         temas_propuestos = []
