@@ -1,10 +1,7 @@
 <ion-header> </ion-header>
-  <ion-content class="app" padding>
+  <ion-content scroll="false" class="app" padding>
       <p> {{v_nombre_boliche}} </p>
       <p> ¿ Te gusta lo que suena ?</p>
-      <br>
-      <br>
-      <br>
       <p> {{v_nombre_tema_actual}} </p>
       <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div>
       <br>
@@ -12,7 +9,7 @@
       <br>
       <br>
   
-      <img src="images/x2.png" align="left" style="position: relative; width:30%" (tap)="sendVoto('dislike')">
-      <img src="images/cuoreg.png" align="right" style="position: relative; width:35%" (tap)="sendVoto('like')">
+      <img src="images/x2.png" align="left" style="position: relative; width:30%" (tap)="enviarVoto('not-like')">
+      <img src="images/cuoreg.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto('like')">
     
   </ion-content>

@@ -3,11 +3,10 @@
   <p> ¡ Gracias por votar !</p>
   <p> Sugiere al DJ lo que quieres escuchar </p>
   <br>
-  <ion-searchbar placeholder="Buscar" ></ion-searchbar> 
+  <!-- <ion-searchbar placeholder="Buscar" ></ion-searchbar>  -->
 </ion-header>
   <br>
 <ion-content padding class="app">
-
   <ion-list no-lines>
     <button ion-item *ngFor="let tema_propuesto of v_temas_propuestos" (tap)="votarTemaPropuesto(this.tema_propuesto.id)">
       {{ tema_propuesto.nombre }}

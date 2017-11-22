@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { HomePage } from '../home/home';
+import { LoadingController } from 'ionic-angular';
+import { Loading } from 'ionic-angular';
 
 //Interfaces
 import { Boliche } from '../../common/Boliche';
@@ -33,25 +35,38 @@ export class SuggestPage {
   boliche: Boliche;
   location: Location;
 
+  //Loading inicial
+  loading:Loading;
+
   constructor(private navCtrl: NavController,
               private navParams: NavParams, 
               private alertCtrl: AlertController,
               private _errorManangerService: errorManangerService,
               private _temaService: temaService,
-              private _votoService: votoService) {
+              private _votoService: votoService,
+              private loadingCtrl: LoadingController) {
     this.boliche  = navParams.get("boliche");
     this.location = navParams.get("location");
+    this.loading = this.loadingCtrl.create({
+      content: 'Cargando temas...'
+    });
+    this.v_temas_propuestos = [];
   }
 
   ngOnInit() {
-    this.setTemasActuales();
+    console.log('ngoninit suggest');
+    this.mostrarLoading();
+    this.buscarTemasPropuestos();
   }
 
-  setTemasActuales(){
+  buscarTemasPropuestos(){
     this._temaService.getTemasPropuestos(this.boliche.id, this.location).subscribe(temas_propuestos => {
       for (var i = 0; i < temas_propuestos.length; i++) {
         this.v_temas_propuestos.push(temas_propuestos[i]);
+        console.log(temas_propuestos[i].nombre);
+        console.log(temas_propuestos[i].id);
       }
+      this.loading.dismiss();
     },
     error => this._errorManangerService.threatError(error))
   }
@@ -60,10 +75,9 @@ export class SuggestPage {
     const voto: Voto = {
       id_boliche: this.boliche.id,
       id_tema: id_tema,
-      tipo_voto: "like"
+      tipo_like: "like"
     };
-    this._votoService.postVoto(voto, this.boliche.id, this.location).subscribe(voto => {
-      if(voto.length > 0){
+    this._votoService.votarPropuesta(voto, this.boliche.id, this.location).subscribe(status => {
         let alert = this.alertCtrl.create({
           subTitle: 'Su sugerencia ha sido enviada correctamente!',
           buttons : ['OK']
@@ -71,9 +85,12 @@ export class SuggestPage {
         console.log('sugerencia de ' + id_tema + 'enviada');
         alert.present();
         this.navCtrl.pop();
-      }
     },
     error => this._errorManangerService.threatError(error))
+  }
+
+  private mostrarLoading(){
+    this.loading.present();
   }
 }
 

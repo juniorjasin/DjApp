@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      View Dj
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <button ion-button> Start night </button>
+  <br>
+
+  <!-- Change Music -->
+  <ion-item>
+    <ion-label floating> Music </ion-label>
+    <ion-input type="text" [(ngModel)]="music"></ion-input>
+  </ion-item>
+  <div padding>
+   <button ion-button color="primary" block (tap)="changeMusic(music)">Cambiar tema</button>
+  </div>
+  <!-- End Change Music -->
+
+  <br>
+  <button ion-button (tap)="viewResults()"> Results </button>
+  <br>
+<!--   <ion-list inset>
+    <ion-item *ngFor="let tema of temas"> {{tema.nombre}}  </ion-item>
+  </ion-list> -->
+  <button ion-button> Stop Night </button>
+    
+
+</ion-content>
