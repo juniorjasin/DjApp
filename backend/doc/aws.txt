@@ -11,6 +11,8 @@ sudo curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-c
 
 # Para conectarme a la maquina virtual por ssh
 ssh -i ~/.ssh/djapp_v1.pem ec2-user@54.86.110.165
+
+# Desde mi compu, copio archivos a la maquina virtual
 scp -i ~/.ssh/djapp_v1.pem docker-compose.yml ec2-user@54.86.110.165:
 
 ejecutar sql contra mysql en docker compose
@@ -26,6 +28,7 @@ En instancia AWS
 
 $ docker login
 $ docker pull juniorjasin/djapp:0.0.2.0
+# reemplazo la version que esta por la version que sigue
 $ sed -i'' 's@juniorjasin/djapp:0.0.1.0@juniorjasin/djapp:0.0.1.2@g' docker-compose.yml
 # con --no-deps no me funciona (creo que elimina las dependencias entre los containers, pero si necesito esas dependencias para que funciona)
 $ docker-compose up -d --no-deps djapp 

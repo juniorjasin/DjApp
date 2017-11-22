@@ -27,7 +27,7 @@ mysql_config = {
     'db': os.environ['MYSQL_DATABASE'],
     'user': os.environ['MYSQL_USER'],
     'passwd': os.environ['MYSQL_PASSWORD'],
-    'port': 3306
+    'port': 3307
     }
 # """
 
@@ -236,7 +236,7 @@ class MySqlRepo:
             logger.debug("Array de likes del tema actual: {}".format(likes_tema_actual))
 
             # Consulta: propuestas
-            query = "SELECT COUNT(*), temas_propuestos.nombre, votos_propuestas.id_tema FROM votos_propuestas JOIN temas_propuestos on votos_propuestas.id_tema = temas_propuestos.id WHERE id_boliche = %s GROUP BY votos_propuestas.id_tema, temas_propuestos.nombre, id_boliche"
+            query = "SELECT COUNT(*), temas_propuestos.nombre, votos_propuestas.id_tema FROM votos_propuestas JOIN temas_propuestos on votos_propuestas.id_tema = temas_propuestos.id WHERE votos_propuestas.id_boliche = %s GROUP BY votos_propuestas.id_tema, temas_propuestos.nombre, id_boliche"
             values = (id_boliche)
             cursor.execute(query,values)
             self.cnx.commit()  

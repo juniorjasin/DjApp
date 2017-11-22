@@ -1,0 +1,14 @@
+Pasos para deployar:
+
+1) Ejecutar archivo build-and-push-image.sh, y pasandole la nueva version con un numero o si son cambios mayores, cambiando los numeros a mano dentro del archivo.
+Tambien en el archivo esta mi nombre de usuario de docker-hub (juniorjasin) y tengo que poner mi pass de docker-hub
+
+2) Entrar a AWS desde la terminal, con los comandos en el archivo aws.txt y descargar la nueva version desde docker-hub
+
+3) Antes de correr la nueva imagen, hay que ejecutar los scripts de las tablas de la base de datos.
+   
+   a) Entonces copiamos los scripts nuestros a la maquina virtual y los pegamos dentro de la carpeta database.
+   b) Ahora levantamos el container de la base de datos (Docker exec -ti <imagen> bash) 
+   c) Entramos a mysql con mysql -u <nombre usuario> -p y ejecutar los scripts con source /var/lib/mysql/db-scripts/schema.sql
+
+4) Finalmente podemos dejar corriendo con el demon el docker-compose.
