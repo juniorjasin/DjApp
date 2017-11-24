@@ -141,6 +141,7 @@ export class HomePage implements OnInit {
 
   public enviarVoto(tipo_like){
     if(this.yaVoto == false){
+      this.yaVoto = true;
       const voto: Voto = {
         id_boliche: this.boliche.id,
         id_tema: this.tema_actual.id,
@@ -149,16 +150,17 @@ export class HomePage implements OnInit {
       try{
         this._votoService.votarTemaActual(voto,this.boliche.id,this.location).subscribe(status => {
           console.log('enviarVoto => se envió el voto correctamente');
-          //Ya votó
-          this.yaVoto = true;
           this.navCtrl.push(SuggestPage, {
               boliche: this.boliche,
               location: this.location
             });
         },
-        error => this._errorManangerService.threatError(error));
+        error => {
+          this.yaVoto = false;
+          this._errorManangerService.threatError(error);});
       }
       catch(exception){
+        this.yaVoto = false
         console.log('enviarVoto => ocurrió una excepción');
         console.log(exception);
         this._errorManangerService.showMessage('Ocurrió un error, reintente de nuevo.');
