@@ -71,17 +71,25 @@ export class HomePage {
     console.log("In ChangeMusic ");
     console.log("ingreso:", valueinput);
     if(valueinput != undefined && valueinput.trim() != ""){
-      const location:Location = {lat: '-31.337485' , lon: '-64.256521'};
-      this._temaService.cambiarTemaActual(this.boliche.id,valueinput,this.location).subscribe(status => {
-        console.log('Tema actual cambiado!');
-        this.music = "";
-        this._messageService.okMessage('El tema ha sido cambiado con éxito!');
-      },
-      error => this._errorManangerService.threatError(error));
+      if(valueinput.indexOf('-') !== -1){
+        if((valueinput.split('-').length-1) == 1){
+          const location:Location = {lat: '-31.337485' , lon: '-64.256521'};
+          this._temaService.cambiarTemaActual(this.boliche.id,valueinput,this.location).subscribe(status => {
+            console.log('Tema actual cambiado!');
+            this.music = "";
+            this._messageService.okMessage('El tema ha sido cambiado con éxito!');
+          },
+          error => this._errorManangerService.threatError(error));
+        }
+        else
+          this._messageService.okMessage('No puede utilizar múltiples veces el caracter "-"');
+      }
+      else
+        this._messageService.okMessage('El formato debe ser Nombre - Autor');
     }
     else{
       console.log('changeMusic input vacío');
-      this._messageService.okMessage('Debe introducir el nombre del tema!');
+      this._messageService.okMessage('No puede dejar el tema vacío!');
     }
   }
 

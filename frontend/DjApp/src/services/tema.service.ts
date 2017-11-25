@@ -48,7 +48,8 @@ export class temaService {
   		const temas: Tema [] = [];
   		for (var i = 0; i < data['temas_propuestos'].length; i++) {
   			temas.push({id: data['temas_propuestos'][i].id,
-                    nombre: data['temas_propuestos'][i].nombre});
+                    nombre: data['temas_propuestos'][i].nombre,
+                    imagen_tema: undefined});//Hay que cambiar la API para que la devuelva.
   		}
   		return temas;
   	}
@@ -57,7 +58,8 @@ export class temaService {
       const tema: Tema [] = [];
       for (var i = 0; i < data['tema_actual'].length; i++) {
         tema.push({id: data['tema_actual'][i].id,
-                    nombre: data['tema_actual'][i].nombre});
+                    nombre: data['tema_actual'][i].nombre,
+                    imagen_tema: data['tema_actual'][i].album_art_url});
       }
       return tema;
     }
