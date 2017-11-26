@@ -138,11 +138,16 @@ class MySqlRepo:
         stringInfo = json.dumps(metadata, sort_keys=True, indent=4)
         songInfo = json.loads(stringInfo)
 
-        album_art_url = songInfo["album_art_url"]
-        track_title = songInfo["track_title"]
-        album_artist_name = songInfo["album_artist_name"]
-        nombre_artista = track_title + " - " + album_artist_name
-        logger.debug(("inserto nombre_artista: " + nombre_artista).encode('ISO-8859-1').strip())
+        try:
+            album_art_url = songInfo["album_art_url"]
+            track_title = songInfo["track_title"]
+            album_artist_name = songInfo["album_artist_name"]
+            nombre_artista = track_title + " - " + album_artist_name
+            logger.debug(("inserto nombre_artista: " + nombre_artista).encode('ISO-8859-1').strip())
+        except:
+            logger.error("Excepcion - No se encontro el tema-autor en el servicio de gracenote")
+            album_art_url  = ""
+            nombre_artista = nombre_tema
 
         try:
             cursor_1 = self.cnx.cursor()

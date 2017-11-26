@@ -83,7 +83,7 @@ var SuggestPage = (function () {
 }());
 SuggestPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-suggest',template:/*ion-inline-start:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/suggest/suggest.html"*/'<ion-header> \n  <br>\n  <p> ¡ Gracias por votar !</p>\n  <p> Sugiere al DJ lo que quieres escuchar </p>\n  <br>\n  <!-- <ion-searchbar placeholder="Buscar" ></ion-searchbar>  -->\n</ion-header>\n  <br>\n<ion-content padding class="app">\n  <ion-list no-lines>\n    <button ion-item *ngFor="let tema_propuesto of v_temas_propuestos" (tap)="votarTemaPropuesto(this.tema_propuesto.id)">\n      {{ tema_propuesto.nombre }}\n    </button> \n  </ion-list>\n</ion-content>'/*ion-inline-end:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/suggest/suggest.html"*/,
+        selector: 'page-suggest',template:/*ion-inline-start:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/pages/suggest/suggest.html"*/'<ion-header> \n  <br>\n  <p> ¡ Gracias por votar !</p>\n  <p> Sugiere al DJ lo que quieres escuchar </p>\n  <br>\n  <!-- <ion-searchbar placeholder="Buscar" ></ion-searchbar>  -->\n</ion-header>\n  <br>\n<ion-content padding class="app">\n  <ion-list no-lines>\n    <button ion-item *ngFor="let tema_propuesto of v_temas_propuestos" (tap)="votarTemaPropuesto(this.tema_propuesto.id)">\n      {{ tema_propuesto.nombre }}\n    </button> \n  </ion-list>\n</ion-content>'/*ion-inline-end:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/pages/suggest/suggest.html"*/,
         providers: [__WEBPACK_IMPORTED_MODULE_2__services_error_mananger_service__["a" /* errorManangerService */], __WEBPACK_IMPORTED_MODULE_3__services_tema_service__["a" /* temaService */], __WEBPACK_IMPORTED_MODULE_4__services_voto_service__["a" /* votoService */]]
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */],
@@ -465,7 +465,10 @@ var HomePage = (function () {
                     _this.tema_actual.nombre = tema_actual[i].nombre;
                     _this.tema_actual.imagen_tema = tema_actual[i].imagen_tema;
                     _this.v_nombre_tema_actual = _this.tema_actual.nombre;
-                    _this.v_tema_actual_src = _this.tema_actual.imagen_tema;
+                    if (_this.tema_actual.imagen_tema == undefined || _this.tema_actual.imagen_tema.trim() == "")
+                        _this.v_tema_actual_src = "images/tema-default.png";
+                    else
+                        _this.v_tema_actual_src = _this.tema_actual.imagen_tema;
                 }
                 setTimeout(function () { _this.buscarTemaActual(); }, _this.delay_buscarTemaActual);
                 console.log('buscarTemaActual success');
@@ -523,18 +526,13 @@ __decorate([
 ], HomePage.prototype, "v_nombre_boliche", void 0);
 HomePage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-home',template:/*ion-inline-start:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content scroll="false" class="app" padding>\n      <p> {{v_nombre_boliche}} </p>\n      <p> ¿ Te gusta lo que suena ?</p>\n      <!-- <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div> -->\n      <div align="center"><img [src]="v_tema_actual_src" style="position: relative; width:60%" ></div>\n      <p> {{v_nombre_tema_actual}} </p>\n      <br>\n      \n      <img src="images/crosses/cross-3.png" align="left" style="position: relative; width:30%" (tap)="enviarVoto(\'not-like\')">\n      <img src="images/hearts/heart-green-10.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto(\'like\')">\n    \n  </ion-content>\n'/*ion-inline-end:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/,
+        selector: 'page-home',template:/*ion-inline-start:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content scroll="false" class="app" padding>\n      <p> {{v_nombre_boliche}} </p>\n      <p> ¿ Te gusta lo que suena ?</p>\n      <!-- <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div> -->\n      <div align="center"><img [src]="v_tema_actual_src" style="position: relative; width:60%;border-radius: 50%;" ></div>\n      <p> {{v_nombre_tema_actual}} </p>\n      <br>\n      \n      <img src="images/crosses/cross-3.png" align="left" style="position: relative; width:30%;" (tap)="enviarVoto(\'not-like\')">\n      <img src="images/hearts/heart-green-10.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto(\'like\')">\n    \n  </ion-content>\n'/*ion-inline-end:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/pages/home/home.html"*/,
         providers: [__WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */], __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */], __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */], __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */], __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]]
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */],
-        __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */],
-        __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */],
-        __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */],
-        __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]) === "function" && _g || Object])
 ], HomePage);
 
+var _a, _b, _c, _d, _e, _f, _g;
 //# sourceMappingURL=home.js.map
 
 /***/ }),
@@ -661,7 +659,7 @@ var MyApp = (function () {
     return MyApp;
 }());
 MyApp = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/app/app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/app/app.html"*/
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/app/app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/app/app.html"*/
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
 ], MyApp);

@@ -131,7 +131,10 @@ export class HomePage implements OnInit {
           this.tema_actual.nombre = tema_actual[i].nombre;
           this.tema_actual.imagen_tema = tema_actual[i].imagen_tema;
           this.v_nombre_tema_actual = this.tema_actual.nombre;
-          this.v_tema_actual_src = this.tema_actual.imagen_tema;
+          if(this.tema_actual.imagen_tema == undefined || this.tema_actual.imagen_tema.trim() == "")
+            this.v_tema_actual_src = "images/tema-default.png";
+          else
+            this.v_tema_actual_src = this.tema_actual.imagen_tema;
         }
         setTimeout(()=>{ this.buscarTemaActual(); }, this.delay_buscarTemaActual);
         console.log('buscarTemaActual success');
