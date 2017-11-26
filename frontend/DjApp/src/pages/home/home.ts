@@ -54,6 +54,9 @@ export class HomePage implements OnInit {
   //Flag para saber si ya voto
   yaVoto:boolean = false;
 
+  //Referencia a la propiedad src de la imágen del tema actual
+  v_tema_actual_src:string;
+
   constructor(private _bolicheService: bolicheService,
               private _locationService: locationService,
               private _temaService: temaService,
@@ -63,7 +66,7 @@ export class HomePage implements OnInit {
               private loadingCtrl: LoadingController) {
     this.boliche = {id: undefined, latitud: undefined, longitud: undefined ,nombre: undefined};
     this.location = {lat: undefined, lon: undefined};
-    this.tema_actual = {id: undefined, nombre: undefined};
+    this.tema_actual = {id: undefined, nombre: undefined, imagen_tema: undefined};
     this.loading = this.loadingCtrl.create({
       content: 'Buscando boliche...'
     });
@@ -126,7 +129,9 @@ export class HomePage implements OnInit {
             this.yaVoto = false;
           this.tema_actual.id = tema_actual[i].id;
           this.tema_actual.nombre = tema_actual[i].nombre;
+          this.tema_actual.imagen_tema = tema_actual[i].imagen_tema;
           this.v_nombre_tema_actual = this.tema_actual.nombre;
+          this.v_tema_actual_src = this.tema_actual.imagen_tema;
         }
         setTimeout(()=>{ this.buscarTemaActual(); }, this.delay_buscarTemaActual);
         console.log('buscarTemaActual success');
@@ -141,6 +146,7 @@ export class HomePage implements OnInit {
 
   public enviarVoto(tipo_like){
     if(this.yaVoto == false){
+      this.yaVoto = true;
       const voto: Voto = {
         id_boliche: this.boliche.id,
         id_tema: this.tema_actual.id,
@@ -149,16 +155,17 @@ export class HomePage implements OnInit {
       try{
         this._votoService.votarTemaActual(voto,this.boliche.id,this.location).subscribe(status => {
           console.log('enviarVoto => se envió el voto correctamente');
-          //Ya votó
-          this.yaVoto = true;
           this.navCtrl.push(SuggestPage, {
               boliche: this.boliche,
               location: this.location
             });
         },
-        error => this._errorManangerService.threatError(error));
+        error => {
+          this.yaVoto = false;
+          this._errorManangerService.threatError(error);});
       }
       catch(exception){
+        this.yaVoto = false
         console.log('enviarVoto => ocurrió una excepción');
         console.log(exception);
         this._errorManangerService.showMessage('Ocurrió un error, reintente de nuevo.');

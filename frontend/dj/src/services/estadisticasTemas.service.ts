@@ -45,7 +45,6 @@ export class estadisticasTemasService {
       estadisticasTemas.estadisticas_tema_actual.nombre = data['estadisticas']['tema_actual'].nombre;
       estadisticasTemas.estadisticas_tema_actual.likes = data['estadisticas']['tema_actual'].likes;
       estadisticasTemas.estadisticas_tema_actual.not_like = data['estadisticas']['tema_actual'].not_like;
-      
   		for (var i = 0; i < data['estadisticas']['propuestas'].length; i++) {
   			estadisticasTemas.estadisticas_tema_propuesta.push({
           id_boliche: data['estadisticas']['propuestas'][i].id_boliche,

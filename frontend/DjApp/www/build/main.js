@@ -249,7 +249,8 @@ var temaService = (function () {
         var temas = [];
         for (var i = 0; i < data['temas_propuestos'].length; i++) {
             temas.push({ id: data['temas_propuestos'][i].id,
-                nombre: data['temas_propuestos'][i].nombre });
+                nombre: data['temas_propuestos'][i].nombre,
+                imagen_tema: undefined }); //Hay que cambiar la API para que la devuelva.
         }
         return temas;
     };
@@ -257,7 +258,8 @@ var temaService = (function () {
         var tema = [];
         for (var i = 0; i < data['tema_actual'].length; i++) {
             tema.push({ id: data['tema_actual'][i].id,
-                nombre: data['tema_actual'][i].nombre });
+                nombre: data['tema_actual'][i].nombre,
+                imagen_tema: data['tema_actual'][i].album_art_url });
         }
         return tema;
     };
@@ -400,7 +402,7 @@ var HomePage = (function () {
         this.yaVoto = false;
         this.boliche = { id: undefined, latitud: undefined, longitud: undefined, nombre: undefined };
         this.location = { lat: undefined, lon: undefined };
-        this.tema_actual = { id: undefined, nombre: undefined };
+        this.tema_actual = { id: undefined, nombre: undefined, imagen_tema: undefined };
         this.loading = this.loadingCtrl.create({
             content: 'Buscando boliche...'
         });
@@ -461,7 +463,9 @@ var HomePage = (function () {
                         _this.yaVoto = false;
                     _this.tema_actual.id = tema_actual[i].id;
                     _this.tema_actual.nombre = tema_actual[i].nombre;
+                    _this.tema_actual.imagen_tema = tema_actual[i].imagen_tema;
                     _this.v_nombre_tema_actual = _this.tema_actual.nombre;
+                    _this.v_tema_actual_src = _this.tema_actual.imagen_tema;
                 }
                 setTimeout(function () { _this.buscarTemaActual(); }, _this.delay_buscarTemaActual);
                 console.log('buscarTemaActual success');
@@ -475,6 +479,7 @@ var HomePage = (function () {
     HomePage.prototype.enviarVoto = function (tipo_like) {
         var _this = this;
         if (this.yaVoto == false) {
+            this.yaVoto = true;
             var voto = {
                 id_boliche: this.boliche.id,
                 id_tema: this.tema_actual.id,
@@ -483,15 +488,17 @@ var HomePage = (function () {
             try {
                 this._votoService.votarTemaActual(voto, this.boliche.id, this.location).subscribe(function (status) {
                     console.log('enviarVoto => se envió el voto correctamente');
-                    //Ya votó
-                    _this.yaVoto = true;
                     _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__suggest_suggest__["a" /* SuggestPage */], {
                         boliche: _this.boliche,
                         location: _this.location
                     });
-                }, function (error) { return _this._errorManangerService.threatError(error); });
+                }, function (error) {
+                    _this.yaVoto = false;
+                    _this._errorManangerService.threatError(error);
+                });
             }
             catch (exception) {
+                this.yaVoto = false;
                 console.log('enviarVoto => ocurrió una excepción');
                 console.log(exception);
                 this._errorManangerService.showMessage('Ocurrió un error, reintente de nuevo.');
@@ -516,6 +523,7 @@ __decorate([
 ], HomePage.prototype, "v_nombre_boliche", void 0);
 HomePage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
+<<<<<<< HEAD
         selector: 'page-home',template:/*ion-inline-start:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content scroll="false" class="app" padding>\n      <p> {{v_nombre_boliche}} </p>\n      <p> ¿ Te gusta lo que suena ?</p>\n      <p> {{v_nombre_tema_actual}} </p>\n      <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div>\n      <br>\n      <br>\n      <br>\n      <br>\n  \n      <img src="images/x2.png" align="left" style="position: relative; width:30%" (tap)="enviarVoto(\'not-like\')">\n      <img src="images/cuoreg.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto(\'like\')">\n    \n  </ion-content>\n'/*ion-inline-end:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/,
         providers: [__WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */], __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */], __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */], __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */], __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]]
     }),
@@ -528,6 +536,15 @@ HomePage = __decorate([
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]])
 ], HomePage);
 
+=======
+        selector: 'page-home',template:/*ion-inline-start:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content scroll="false" class="app" padding>\n      <p> {{v_nombre_boliche}} </p>\n      <p> ¿ Te gusta lo que suena ?</p>\n      <p> {{v_nombre_tema_actual}} </p>\n      <!-- <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div> -->\n      <div align="center"><img [src]="v_tema_actual_src" style="position: relative; width:60%" ></div>\n      <br>\n      <br>\n      <br>\n      <br>\n  \n      <img src="images/x2.png" align="left" style="position: relative; width:30%" (tap)="enviarVoto(\'not-like\')">\n      <img src="images/cuoreg.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto(\'like\')">\n    \n  </ion-content>\n'/*ion-inline-end:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/pages/home/home.html"*/,
+        providers: [__WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */], __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */], __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */], __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */], __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]]
+    }),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]) === "function" && _g || Object])
+], HomePage);
+
+var _a, _b, _c, _d, _e, _f, _g;
+>>>>>>> ff266d516dfc84f2b0b2a105f1808ed563abbcb0
 //# sourceMappingURL=home.js.map
 
 /***/ }),
