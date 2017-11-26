@@ -2,6 +2,16 @@ from domain import service
 from repos import mysql_repo
 from util import exception
 from decorators.decorador import check_authorization
+import logging
+
+logger = logging.getLogger('temaActualHandler')
+logger.setLevel(logging.DEBUG)
+logger.propagate = False
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 class TemaActualHandler:
     def __init__(self,request):        
@@ -13,6 +23,7 @@ class TemaActualHandler:
         repo = mysql_repo.MySqlRepo()
         svc = service.Service(repo)
         respuesta = svc.obtener_tema_actual(id_boliche)
+        logger.debug(respuesta)
         return {"tema_actual":respuesta}
 
 

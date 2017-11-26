@@ -61,7 +61,7 @@ def consultar_boliches():
         return json.dumps(b)
 
 
-#API 7
+#API 7 Obtener tema actual
 @app.route('/boliches/<id_boliche>/tema_actual', method=['GET', 'OPTIONS'])
 @my_decorator
 def consultar_tema_actual(id_boliche):
@@ -72,6 +72,8 @@ def consultar_tema_actual(id_boliche):
         a = tema_actual.TemaActualHandler(request)
         b = a.get(id_boliche)
         response.headers['Content-Type'] = 'application/json'
+        logger.debug("json:")
+        logger.debug(json.dumps(b))
         return json.dumps(b)
 
 
@@ -79,6 +81,9 @@ def consultar_tema_actual(id_boliche):
 @app.route('/boliches/<id_boliche>/tema_actual', method=['POST', 'OPTIONS'])
 @my_decorator
 def insertar_actual(id_boliche):
+    
+    print "intertar tema actual {}".format(request.json)
+
     if request.method == 'OPTIONS':
         return 
     else:

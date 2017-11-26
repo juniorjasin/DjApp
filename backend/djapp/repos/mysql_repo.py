@@ -3,16 +3,15 @@ import datetime
 import os
 import logging
 from util import exception
-
-# mysql_config = {
-#     'host': 'localhost',
-#     'db': 'djapp',
-#     'user': 'dev',
-#     'passwd': 'changeme'
-# }
+from pygn import pygn
+import json
 
 
-logger = logging.getLogger('app')
+clientID = '1452299036-F0D031687E6211257A4D81AFB1F7C81E' 
+userID = '26838888848744272-F2E01985C6B9E075B52BAFD7FFCB39E4'
+
+
+logger = logging.getLogger('mysql_repo')
 logger.setLevel(logging.DEBUG)
 logger.propagate = False
 ch = logging.StreamHandler()
@@ -21,7 +20,7 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-# """
+
 mysql_config = {
     'host': os.environ['MYSQL_ENDPOINT'],
     'db': os.environ['MYSQL_DATABASE'],
@@ -29,7 +28,7 @@ mysql_config = {
     'passwd': os.environ['MYSQL_PASSWORD'],
     'port': 3307
     }
-# """
+    
 
 class MySqlRepo:
     def __init__(self):
@@ -99,36 +98,64 @@ class MySqlRepo:
         tema = []
         try:
             cursor = self.cnx.cursor()
-            query = "SELECT temas.id, temas.nombre FROM  (SELECT id_tema FROM temas_boliches WHERE id_boliche = {} ORDER BY id DESC LIMIT 1) as q JOIN temas ON q.id_tema = temas.id".format(id_boliche)
+            query = "SELECT temas.id, temas.nombre, temas.album_art_url FROM (SELECT id_tema FROM temas_boliches WHERE id_boliche = {} ORDER BY id DESC LIMIT 1) as q JOIN temas ON q.id_tema = temas.id".format(id_boliche)
             cursor.execute(query)
             rows = cursor.fetchall()
-            # print rows
-            # print type(rows)
             cursor.close()
 
             for row in rows:
-                t = {"id":row[0],"nombre":row[1]}
+
+                logger.debug("traigo nombre de tema:")
+                logger.debug(row[1].decode('ISO-8859-1'))
+
+                t = {"id":row[0],"nombre":row[1].decode('ISO-8859-1'),"album_art_url":row[2]}
                 tema.append(t)
             logger.debug("Array de likes: {}".format(tema))
 
         except pymysql.Error as err:
              logger.error("fallo la consulta en obtener_tema_actual")
              raise exception.InternalServerError("fallo obtener_tema_actual")
-
+        
+        logger.debug("return tema: {}".format(tema))
         return tema
 
     def insertar_tema_actual(self,id_boliche, nombre_tema):
+        global userID
+        global clientID
+
         result = []
+        
+        autor_nombre = nombre_tema.split('-')
+        # Si no le pongo la codificacion se rompe
+        logger.debug("Buscar:" + (autor_nombre[0] + autor_nombre[1]).encode('ISO-8859-1').strip())
+
+        metadata = pygn.search(clientID=clientID, userID=userID, artist=autor_nombre[1], track=autor_nombre[0])
+        if metadata.get('ERROR',None):
+            print "ERROR"
+            userID = pygn.register(clientID)
+            metadata = pygn.search(clientID=clientID, userID=userID, artist=autor_nombre[1], track=autor_nombre[0])
+
+        # logger.debug("JSON api gracenote: {}".format(metadata))
+        stringInfo = json.dumps(metadata, sort_keys=True, indent=4)
+        songInfo = json.loads(stringInfo)
+
+        album_art_url = songInfo["album_art_url"]
+        track_title = songInfo["track_title"]
+        album_artist_name = songInfo["album_artist_name"]
+        nombre_artista = track_title + " - " + album_artist_name
+        logger.debug(("inserto nombre_artista:" + nombre_artista).encode('ISO-8859-1').strip())
+
         try:
             cursor_1 = self.cnx.cursor()
             query_1 = "SELECT id FROM temas WHERE nombre = %s"
-            cursor_1.execute(query_1,nombre_tema)
+            cursor_1.execute(query_1,track_title)
             result_cursor_1 = cursor_1.fetchone()
             cursor_1.close()
             cursor_2 = self.cnx.cursor()
             if result_cursor_1 is None:
-                query_2 = "INSERT INTO temas(nombre) values(%s)"
-                cursor_2.execute(query_2, nombre_tema)
+                query_2 = "INSERT INTO temas(nombre, album_art_url) values(%s,%s)"
+                values_query_2 = (track_title, album_art_url)
+                cursor_2.execute(query_2, values_query_2)
                 id_tema_insertado = cursor_2.lastrowid 
                 query_3 = "INSERT INTO temas_boliches (id_boliche, id_tema) values(%s,%s)"
                 values_query_3 = (id_boliche, id_tema_insertado)
@@ -168,8 +195,6 @@ class MySqlRepo:
             raise exception.InternalServerError("fallo insertar_like")
         return result
 
-
-
     def insertar_propuesta(self, id_boliche, id_tema):
 
         logger.debug("Comienza obtener insertar_propuesta")
@@ -189,8 +214,6 @@ class MySqlRepo:
             raise exception.InternalServerError("fallo insertar_propuesta")
 
         return [respuesta]
-
-
 
     def obtener_estadisticas(self, id_boliche):
         
@@ -277,7 +300,6 @@ class MySqlRepo:
             msg = "Failed init database: {}".format(err)
             raise exception.InternalServerError("fallo conexion con base de datos")
         return temas_propuestos
-    
-    
+     
     def insertar_tema_propuesto(self,nombre_tema,id_boliche):
         pass

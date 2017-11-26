@@ -1,9 +1,19 @@
 from math import sin,cos,sqrt,asin,pi
 import pyproj, sys
 import json
+import logging
 
-r = 6371000 #radio terrestre medio, en metros
- 
+logger = logging.getLogger('service')
+logger.setLevel(logging.DEBUG)
+logger.propagate = False
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
+
+r = 6371000 #radio terrestre medio, en metros 
 c = pi/180 #constante para transformar grados en radianes
 
 class Service:
@@ -42,8 +52,8 @@ class Service:
         return response
 
     def obtener_tema_actual(self, id_boliche):
-        # print "self.repo", self.repo
-        response = self.repo.obtener_tema_actual(id_boliche)           
+        response = self.repo.obtener_tema_actual(id_boliche)        
+        logger.debug(response)
         return response
 
     def insertar_tema_actual(self,id_boliche, nombre_tema):

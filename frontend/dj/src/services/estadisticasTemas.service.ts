@@ -45,12 +45,13 @@ export class estadisticasTemasService {
       estadisticasTemas.estadisticas_tema_actual.nombre = data['estadisticas']['tema_actual'].nombre;
       estadisticasTemas.estadisticas_tema_actual.likes = data['estadisticas']['tema_actual'].likes;
       estadisticasTemas.estadisticas_tema_actual.not_like = data['estadisticas']['tema_actual'].not_like;
-  		for (var i = 0; i < data['estadisticas']['prouestas'].length; i++) {
+      
+  		for (var i = 0; i < data['estadisticas']['propuestas'].length; i++) {
   			estadisticasTemas.estadisticas_tema_propuesta.push({
-          id_boliche: data['estadisticas']['prouestas'][i].id_boliche,
-          id_tema: data['estadisticas']['prouestas'][i].id_tema,
-          nombre: data['estadisticas']['prouestas'][i].nombre,
-          cantidad: data['estadisticas']['prouestas'][i].cantidad,
+          id_boliche: data['estadisticas']['propuestas'][i].id_boliche,
+          id_tema: data['estadisticas']['propuestas'][i].id_tema,
+          nombre: data['estadisticas']['propuestas'][i].nombre,
+          cantidad: data['estadisticas']['propuestas'][i].cantidad,
         });
   		}
   		return estadisticasTemas;

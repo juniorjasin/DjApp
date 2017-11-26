@@ -83,7 +83,7 @@ var SuggestPage = (function () {
 }());
 SuggestPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-suggest',template:/*ion-inline-start:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/pages/suggest/suggest.html"*/'<ion-header> \n  <br>\n  <p> ¡ Gracias por votar !</p>\n  <p> Sugiere al DJ lo que quieres escuchar </p>\n  <br>\n  <!-- <ion-searchbar placeholder="Buscar" ></ion-searchbar>  -->\n</ion-header>\n  <br>\n<ion-content padding class="app">\n  <ion-list no-lines>\n    <button ion-item *ngFor="let tema_propuesto of v_temas_propuestos" (tap)="votarTemaPropuesto(this.tema_propuesto.id)">\n      {{ tema_propuesto.nombre }}\n    </button> \n  </ion-list>\n</ion-content>'/*ion-inline-end:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/pages/suggest/suggest.html"*/,
+        selector: 'page-suggest',template:/*ion-inline-start:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/suggest/suggest.html"*/'<ion-header> \n  <br>\n  <p> ¡ Gracias por votar !</p>\n  <p> Sugiere al DJ lo que quieres escuchar </p>\n  <br>\n  <!-- <ion-searchbar placeholder="Buscar" ></ion-searchbar>  -->\n</ion-header>\n  <br>\n<ion-content padding class="app">\n  <ion-list no-lines>\n    <button ion-item *ngFor="let tema_propuesto of v_temas_propuestos" (tap)="votarTemaPropuesto(this.tema_propuesto.id)">\n      {{ tema_propuesto.nombre }}\n    </button> \n  </ion-list>\n</ion-content>'/*ion-inline-end:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/suggest/suggest.html"*/,
         providers: [__WEBPACK_IMPORTED_MODULE_2__services_error_mananger_service__["a" /* errorManangerService */], __WEBPACK_IMPORTED_MODULE_3__services_tema_service__["a" /* temaService */], __WEBPACK_IMPORTED_MODULE_4__services_voto_service__["a" /* votoService */]]
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */],
@@ -121,7 +121,7 @@ webpackEmptyAsyncContext.id = 111;
 
 var map = {
 	"../pages/suggest/suggest.module": [
-		272,
+		271,
 		0
 	]
 };
@@ -197,8 +197,8 @@ errorManangerService = __decorate([
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return temaService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -277,8 +277,8 @@ temaService = __decorate([
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return votoService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -363,7 +363,6 @@ votoService = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__services_location_service__ = __webpack_require__(270);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__services_tema_service__ = __webpack_require__(155);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__services_voto_service__ = __webpack_require__(156);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__services_estadisticasTemas_service__ = __webpack_require__(271);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -383,15 +382,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 var HomePage = (function () {
-    function HomePage(_bolicheService, _locationService, _temaService, _votoService, _errorManangerService, _estadisticasTemasService, navCtrl, loadingCtrl) {
+    function HomePage(_bolicheService, _locationService, _temaService, _votoService, _errorManangerService, navCtrl, loadingCtrl) {
         this._bolicheService = _bolicheService;
         this._locationService = _locationService;
         this._temaService = _temaService;
         this._votoService = _votoService;
         this._errorManangerService = _errorManangerService;
-        this._estadisticasTemasService = _estadisticasTemasService;
         this.navCtrl = navCtrl;
         this.loadingCtrl = loadingCtrl;
         this.isenabled = false;
@@ -409,15 +406,11 @@ var HomePage = (function () {
         });
     }
     HomePage.prototype.ngOnInit = function () {
-        var location = { lat: '-31.337485', lon: '-64.256521' };
-        this._estadisticasTemasService.getEstadisticasTemas(1, location).subscribe(function (res) {
-            console.dir(res);
-        });
-        // console.log('ngoninit home');
-        // this.mostrarLoading();
-        // this.obtenerLocalizacion();
-        // this.buscarBoliche();
-        // this.buscarTemaActual();
+        console.log('ngoninit home');
+        this.mostrarLoading();
+        this.obtenerLocalizacion();
+        this.buscarBoliche();
+        this.buscarTemaActual();
     };
     HomePage.prototype.obtenerLocalizacion = function () {
         var _this = this;
@@ -523,13 +516,18 @@ __decorate([
 ], HomePage.prototype, "v_nombre_boliche", void 0);
 HomePage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-home',template:/*ion-inline-start:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content scroll="false" class="app" padding>\n      <p> {{v_nombre_boliche}} </p>\n      <p> ¿ Te gusta lo que suena ?</p>\n      <p> {{v_nombre_tema_actual}} </p>\n      <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div>\n      <br>\n      <br>\n      <br>\n      <br>\n  \n      <img src="images/x2.png" align="left" style="position: relative; width:30%" (tap)="enviarVoto(\'not-like\')">\n      <img src="images/cuoreg.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto(\'like\')">\n    \n  </ion-content>\n'/*ion-inline-end:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/pages/home/home.html"*/,
-        providers: [__WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */], __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */], __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */], __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */], __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */], __WEBPACK_IMPORTED_MODULE_8__services_estadisticasTemas_service__["a" /* estadisticasTemasService */]]
+        selector: 'page-home',template:/*ion-inline-start:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content scroll="false" class="app" padding>\n      <p> {{v_nombre_boliche}} </p>\n      <p> ¿ Te gusta lo que suena ?</p>\n      <p> {{v_nombre_tema_actual}} </p>\n      <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div>\n      <br>\n      <br>\n      <br>\n      <br>\n  \n      <img src="images/x2.png" align="left" style="position: relative; width:30%" (tap)="enviarVoto(\'not-like\')">\n      <img src="images/cuoreg.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto(\'like\')">\n    \n  </ion-content>\n'/*ion-inline-end:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/,
+        providers: [__WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */], __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */], __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */], __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */], __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_8__services_estadisticasTemas_service__["a" /* estadisticasTemasService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__services_estadisticasTemas_service__["a" /* estadisticasTemasService */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]) === "function" && _h || Object])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */],
+        __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */],
+        __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */],
+        __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */],
+        __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]])
 ], HomePage);
 
-var _a, _b, _c, _d, _e, _f, _g, _h;
 //# sourceMappingURL=home.js.map
 
 /***/ }),
@@ -554,7 +552,7 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(260);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_splash_screen__ = __webpack_require__(198);
@@ -562,7 +560,7 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_home_home__ = __webpack_require__(199);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_suggest_suggest__ = __webpack_require__(102);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ionic_native_geolocation__ = __webpack_require__(200);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__angular_http__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__angular_http__ = __webpack_require__(32);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -656,7 +654,7 @@ var MyApp = (function () {
     return MyApp;
 }());
 MyApp = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/app/app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"/home/juan/Documents/github_projects/DjApp/frontend/DjApp/src/app/app.html"*/
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/app/app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/app/app.html"*/
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
 ], MyApp);
@@ -670,8 +668,8 @@ MyApp = __decorate([
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return bolicheService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -726,7 +724,7 @@ bolicheService = __decorate([
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return locationService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ionic_native_geolocation__ = __webpack_require__(200);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -767,84 +765,6 @@ locationService = __decorate([
 ], locationService);
 
 //# sourceMappingURL=location.service.js.map
-
-/***/ }),
-
-/***/ 271:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return estadisticasTemasService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(0);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-var estadisticasTemasService = (function () {
-    function estadisticasTemasService(http) {
-        this.http = http;
-        this.domain = 'http://54.86.110.165:9090';
-    }
-    estadisticasTemasService.prototype.getEstadisticasTemas = function (id_boliche, location) {
-        var _this = this;
-        if (id_boliche == undefined || location.lat == undefined || location.lon == undefined)
-            throw "getEstadisticasTemas parámetros sin definir";
-        var path = this.domain + '/estadisticas/' + id_boliche;
-        var encodedPath = encodeURI(path);
-        var headers = new __WEBPACK_IMPORTED_MODULE_0__angular_http__["a" /* Headers */]({ 'Content-Type': 'application/json',
-            'X-LAT': location.lat,
-            'X-LON': location.lon
-        });
-        var options = new __WEBPACK_IMPORTED_MODULE_0__angular_http__["d" /* RequestOptions */]({ headers: headers });
-        return this.http.get(encodedPath, options).map(function (response) { return _this.mapEstadisticasTemas(response.json()); });
-    };
-    estadisticasTemasService.prototype.mapEstadisticasTemas = function (data) {
-        var estadisticasTemas = {
-            estadisticas_tema_actual: {
-                id_boliche: undefined,
-                id_tema: undefined,
-                nombre: undefined,
-                likes: undefined,
-                not_like: undefined
-            },
-            estadisticas_tema_propuesta: []
-        };
-        estadisticasTemas.estadisticas_tema_actual.id_boliche = data['estadisticas']['tema_actual'].id_boliche;
-        estadisticasTemas.estadisticas_tema_actual.id_tema = data['estadisticas']['tema_actual'].id_tema;
-        estadisticasTemas.estadisticas_tema_actual.nombre = data['estadisticas']['tema_actual'].nombre;
-        estadisticasTemas.estadisticas_tema_actual.likes = data['estadisticas']['tema_actual'].likes;
-        estadisticasTemas.estadisticas_tema_actual.not_like = data['estadisticas']['tema_actual'].not_like;
-        for (var i = 0; i < data['estadisticas']['prouestas'].length; i++) {
-            estadisticasTemas.estadisticas_tema_propuesta.push({
-                id_boliche: data['estadisticas']['prouestas'][i].id_boliche,
-                id_tema: data['estadisticas']['prouestas'][i].id_tema,
-                nombre: data['estadisticas']['prouestas'][i].nombre,
-                cantidad: data['estadisticas']['prouestas'][i].cantidad,
-            });
-        }
-        return estadisticasTemas;
-    };
-    return estadisticasTemasService;
-}());
-estadisticasTemasService = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["B" /* Injectable */])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]) === "function" && _a || Object])
-], estadisticasTemasService);
-
-var _a;
-//# sourceMappingURL=estadisticasTemas.service.js.map
 
 /***/ })
 
