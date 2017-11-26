@@ -131,11 +131,10 @@ class MySqlRepo:
 
         metadata = pygn.search(clientID=clientID, userID=userID, artist=autor_nombre[1], track=autor_nombre[0])
         if metadata.get('ERROR',None):
-            print "ERROR"
+            logger.error("No se pudo buscar el tema en API gracenote, se intenta renovar el UseID")
             userID = pygn.register(clientID)
             metadata = pygn.search(clientID=clientID, userID=userID, artist=autor_nombre[1], track=autor_nombre[0])
 
-        # logger.debug("JSON api gracenote: {}".format(metadata))
         stringInfo = json.dumps(metadata, sort_keys=True, indent=4)
         songInfo = json.loads(stringInfo)
 
@@ -143,18 +142,18 @@ class MySqlRepo:
         track_title = songInfo["track_title"]
         album_artist_name = songInfo["album_artist_name"]
         nombre_artista = track_title + " - " + album_artist_name
-        logger.debug(("inserto nombre_artista:" + nombre_artista).encode('ISO-8859-1').strip())
+        logger.debug(("inserto nombre_artista: " + nombre_artista).encode('ISO-8859-1').strip())
 
         try:
             cursor_1 = self.cnx.cursor()
             query_1 = "SELECT id FROM temas WHERE nombre = %s"
-            cursor_1.execute(query_1,track_title)
+            cursor_1.execute(query_1,nombre_artista)
             result_cursor_1 = cursor_1.fetchone()
             cursor_1.close()
             cursor_2 = self.cnx.cursor()
             if result_cursor_1 is None:
                 query_2 = "INSERT INTO temas(nombre, album_art_url) values(%s,%s)"
-                values_query_2 = (track_title, album_art_url)
+                values_query_2 = (nombre_artista, album_art_url)
                 cursor_2.execute(query_2, values_query_2)
                 id_tema_insertado = cursor_2.lastrowid 
                 query_3 = "INSERT INTO temas_boliches (id_boliche, id_tema) values(%s,%s)"
