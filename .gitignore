@@ -3,3 +3,4 @@ backend/.env
 backend/*.pyc
 frontend/DjApp/www/build/
 frontend/DjApp/.sourcemaps/main.js.map
+frontend/Djapp/node_modules/
