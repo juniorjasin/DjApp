@@ -60,7 +60,7 @@ class MySqlRepo:
                 return boliches
             else:
                 for row in rows:
-                    boliche = {"id":row[0],"nombre":row[1], "latitud": row[2], "longitud": row[3],"id_tema_actual":row[4]}
+                    boliche = {"id":row[0],"nombre":row[1].decode('ISO-8859-1'), "latitud": row[2], "longitud": row[3],"id_tema_actual":row[4]}
                     boliches.append(boliche)
         except pymysql.Error as err:
             msg = "Failed init database: {}".format(err)
@@ -250,14 +250,12 @@ class MySqlRepo:
 
             for row in rows:
 
-                nombre = row[1]
+                nombre = row[1].decode('ISO-8859-1')
                 if row[2] == 'like':
                     cant_likes = row[0]
                 else:
                     cant_not_likes = row[0]
 
-                # like_tema = {"nombre":row[1], "id_tema":row[3], "id_boliche":id_boliche,"tipo":row[2], "cantidad":row[0]}
-                # likes_tema_actual.append(like_tema)
 
             likes_tema_actual = {"id_tema":id_tema_actual, "nombre": nombre, "id_boliche":id_boliche, "likes":cant_likes, "not_like":cant_not_likes}
             logger.debug("Array de likes del tema actual: {}".format(likes_tema_actual))
@@ -271,7 +269,7 @@ class MySqlRepo:
             rows = cursor.fetchall()
             logger.debug("tupla de propuestas que obtengo de la base de datos: {}".format(rows))
             for row in rows:
-                propuesta_tema = {"nombre":row[1], "id_tema":row[2], "id_boliche":id_boliche, "cantidad":row[0]}
+                propuesta_tema = {"nombre":row[1].decode('ISO-8859-1'), "id_tema":row[2], "id_boliche":id_boliche, "cantidad":row[0]}
                 propuestas.append(propuesta_tema)
             logger.debug("Array de propuestas: {}".format(propuestas))
 
@@ -298,7 +296,7 @@ class MySqlRepo:
                 return temas_propuestos
             else:
                 for row in rows:
-                    tema_propuesto = {"id":row[0],"nombre":row[1]}
+                    tema_propuesto = {"id":row[0],"nombre":row[1].decode('ISO-8859-1')}
                     temas_propuestos.append(tema_propuesto)
         except pymysql.Error as err:
             msg = "Failed init database: {}".format(err)

@@ -1,13 +1,16 @@
 <ion-header> </ion-header>
   <ion-content scroll="false" class="app" padding>
-      <p> {{v_nombre_boliche}} </p>
-      <p> ¿ Te gusta lo que suena ?</p>
+      <p id="boliche"> {{v_nombre_boliche}} </p>
+      <hr class="style1">
+      <p id="titulo"> ¿ Te gusta lo que suena ?</p>
       <!-- <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div> -->
-      <div align="center"><img [src]="v_tema_actual_src" style="position: relative; width:60%;border-radius: 50%;" ></div>
-      <p> {{v_nombre_tema_actual}} </p>
-      <br>
+      <div align="center"><img [src]="v_tema_actual_src" style="position: relative; width:75% ;border-radius: 50%;" ></div>
+      <p id="nombe_tema">{{v_nombre_ta}} </p>
+      <p id="artista">{{v_artista_ta}}</p>
       
-      <img src="images/crosses/cross-3.png" align="left" style="position: relative; width:30%;" (tap)="enviarVoto('not-like')">
-      <img src="images/hearts/heart-green-10.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto('like')">
+
+      
+      <img id="heart" src="images/crosses/cross-3.png" align="left" style="position: relative; width:30%;" (tap)="enviarVoto('not-like')">
+      <img id="cross" src="images/hearts/heart-green-10.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto('like')">
     
   </ion-content>

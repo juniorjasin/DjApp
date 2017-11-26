@@ -37,6 +37,9 @@ export class HomePage implements OnInit {
 
   @Input("v_nombre_tema_actual") v_nombre_tema_actual;
   @Input("v_nombre_boliche") v_nombre_boliche;
+  @Input("v_nombre_ta") v_nombre_ta
+  @Input("v_artista_ta") v_artista_ta
+
   boliche: Boliche;
   location: Location;
   tema_actual: Tema;
@@ -131,6 +134,12 @@ export class HomePage implements OnInit {
           this.tema_actual.nombre = tema_actual[i].nombre;
           this.tema_actual.imagen_tema = tema_actual[i].imagen_tema;
           this.v_nombre_tema_actual = this.tema_actual.nombre;
+          // Para poder mostrar el tema y artista por separado
+          var nombre_tema = this.v_nombre_tema_actual.split("-", 2);
+          this.v_nombre_ta = nombre_tema[0]
+          this.v_artista_ta = nombre_tema[1]
+          console.log(this.v_nombre_ta);
+          console.log(this.v_artista_ta);
           if(this.tema_actual.imagen_tema == undefined || this.tema_actual.imagen_tema.trim() == "")
             this.v_tema_actual_src = "images/tema-default.png";
           else

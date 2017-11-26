@@ -25517,11 +25517,45 @@ page-home .app {
   background: linear-gradient(#5C645A, #1C201D, black);
 }
 
-page-home p {
+page-home #boliche {
   color: white;
   text-align: center;
-  font-size: 25px;
+  font-size: 38px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+page-home hr.style1 {
+  border-top: 1px solid #4d4d4d;
+}
+
+page-home #titulo {
+  color: white;
+  text-align: center;
+  font-size: 26px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-top: 0;
+  margin-bottom: 0 px;
+}
+
+page-home #nombe_tema {
+  color: white;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-top: 1;
+  margin-bottom: 0;
+}
+
+page-home #artista {
+  color: #c4c4c4;
+  text-align: center;
+  font-size: 18px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-top: 0;
+  margin-bottom: 1;
 }
 
 page-suggest .app {
