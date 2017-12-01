@@ -10,6 +10,10 @@ import json
 clientID = '1452299036-F0D031687E6211257A4D81AFB1F7C81E' 
 userID = '26838888848744272-F2E01985C6B9E075B52BAFD7FFCB39E4'
 
+import io
+from colorthief import ColorThief
+from urllib2 import urlopen
+
 
 logger = logging.getLogger('mysql_repo')
 logger.setLevel(logging.DEBUG)
@@ -26,9 +30,10 @@ mysql_config = {
     'db': os.environ['MYSQL_DATABASE'],
     'user': os.environ['MYSQL_USER'],
     'passwd': os.environ['MYSQL_PASSWORD'],
-    'port': 3307
+    'port': 3306
     }
     
+
 
 class MySqlRepo:
     def __init__(self):
@@ -98,7 +103,7 @@ class MySqlRepo:
         tema = []
         try:
             cursor = self.cnx.cursor()
-            query = "SELECT temas.id, temas.nombre, temas.album_art_url FROM (SELECT id_tema FROM temas_boliches WHERE id_boliche = {} ORDER BY id DESC LIMIT 1) as q JOIN temas ON q.id_tema = temas.id".format(id_boliche)
+            query = "SELECT temas.id, temas.nombre, temas.album_art_url, temas.color FROM (SELECT id_tema FROM temas_boliches WHERE id_boliche = {} ORDER BY id DESC LIMIT 1) as q JOIN temas ON q.id_tema = temas.id".format(id_boliche)
             cursor.execute(query)
             rows = cursor.fetchall()
             cursor.close()
@@ -108,7 +113,7 @@ class MySqlRepo:
                 logger.debug("traigo nombre de tema:")
                 logger.debug(row[1].decode('ISO-8859-1'))
 
-                t = {"id":row[0],"nombre":row[1].decode('ISO-8859-1'),"album_art_url":row[2]}
+                t = {"id":row[0],"nombre":row[1].decode('ISO-8859-1'),"album_art_url":row[2], "color":row[3]}
                 tema.append(t)
             logger.debug("Array de likes: {}".format(tema))
 
@@ -144,7 +149,19 @@ class MySqlRepo:
             album_artist_name = songInfo["album_artist_name"]
             nombre_artista = track_title + " - " + album_artist_name
             logger.debug(("inserto nombre_artista: " + nombre_artista).encode('ISO-8859-1').strip())
-        except:
+
+            RGBdominantColor = getDominantColor(album_art_url)
+            logger.debug("Color dominante: {}".format(RGBdominantColor))
+            
+            hexDominantColor = None
+
+            if RGBdominantColor:
+                hexDominantColor = RGBTupleToHexString(RGBdominantColor)
+                logger.debug("Numero en hexadecimal: {}".format(hexDominantColor))
+
+
+        except Exception as ex:
+            logger.error("Excepcion in insertar_tema_actual- {}".format(ex))
             logger.error("Excepcion - No se encontro el tema-autor en el servicio de gracenote")
             album_art_url  = ""
             nombre_artista = nombre_tema
@@ -157,8 +174,8 @@ class MySqlRepo:
             cursor_1.close()
             cursor_2 = self.cnx.cursor()
             if result_cursor_1 is None:
-                query_2 = "INSERT INTO temas(nombre, album_art_url) values(%s,%s)"
-                values_query_2 = (nombre_artista, album_art_url)
+                query_2 = "INSERT INTO temas(nombre, album_art_url, color) values(%s,%s,%s)"
+                values_query_2 = (nombre_artista, album_art_url, hexDominantColor)
                 cursor_2.execute(query_2, values_query_2)
                 id_tema_insertado = cursor_2.lastrowid 
                 query_3 = "INSERT INTO temas_boliches (id_boliche, id_tema) values(%s,%s)"
@@ -284,7 +301,8 @@ class MySqlRepo:
 
     def obtener_temas_propuestos(self, id_boliche):        
         temas_propuestos = []
-        cantidad_temas = 4
+        # Podriamos ver de setear este numero desde afuera
+        cantidad_temas = 10
         try:        
             cursor = self.cnx.cursor()
             query = "SELECT id, nombre FROM temas ORDER BY RAND() LIMIT " + str(cantidad_temas)
@@ -305,3 +323,37 @@ class MySqlRepo:
      
     def insertar_tema_propuesto(self,nombre_tema,id_boliche):
         pass
+
+
+
+
+######### Cambiar a otro archivo (podria ser un archivo de funcs auxiliares)
+def RGBTupleToHexString(rgbTuple):
+    stringHex = None
+    try:
+        r = rgbTuple[0]
+        g = rgbTuple[1]
+        b = rgbTuple[2]
+        stringHex = "#" + toHex(r) + toHex(g) + toHex(b)
+    except Exception as ex:
+        logger.error("Error in RGBTupleToHexString: {}".format(ex))
+    return stringHex
+
+def getDominantColor(img_url):
+    dominantColor = None
+    try:
+        fd = urlopen(img_url)
+        f = io.BytesIO(fd.read())
+        color_thief = ColorThief(f)
+        dominantColor = color_thief.get_color(quality=1)
+    except Exception as ex:
+        logger.error("Error in getDominantColor: {}".format(ex))
+    return dominantColor
+
+def toHex(number):
+    result = None
+    try:
+        result = hex(number).split('x')[-1]
+    except Exception as ex:
+        logger.error("Error in toHex: {}".format(ex))
+    return result

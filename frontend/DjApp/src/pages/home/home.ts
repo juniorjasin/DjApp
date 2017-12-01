@@ -37,8 +37,9 @@ export class HomePage implements OnInit {
 
   @Input("v_nombre_tema_actual") v_nombre_tema_actual;
   @Input("v_nombre_boliche") v_nombre_boliche;
-  @Input("v_nombre_ta") v_nombre_ta
-  @Input("v_artista_ta") v_artista_ta
+  @Input("v_nombre_ta") v_nombre_ta;
+  @Input("v_artista_ta") v_artista_ta;
+  @Input("v_background_color") v_bkgr_color;
 
   boliche: Boliche;
   location: Location;
@@ -69,7 +70,7 @@ export class HomePage implements OnInit {
               private loadingCtrl: LoadingController) {
     this.boliche = {id: undefined, latitud: undefined, longitud: undefined ,nombre: undefined};
     this.location = {lat: undefined, lon: undefined};
-    this.tema_actual = {id: undefined, nombre: undefined, imagen_tema: undefined};
+    this.tema_actual = {id: undefined, nombre: undefined, imagen_tema: undefined, color: undefined};
     this.loading = this.loadingCtrl.create({
       content: 'Buscando boliche...'
     });
@@ -124,22 +125,41 @@ export class HomePage implements OnInit {
   }
 
   private buscarTemaActual(){
+    
+    console.log("buscarTemaActual...");
+
     try{
+      console.log("antes de getTemaActual...");
       this._temaService.getTemaActual(this.boliche.id, this.location).subscribe(tema_actual => {
         for (var i = 0; i < tema_actual.length; i++) {
           //Si cambia el tema actual, habilitar para votar
           if(this.tema_actual.id != undefined && this.tema_actual.id != tema_actual[i].id)
             this.yaVoto = false;
+          
           this.tema_actual.id = tema_actual[i].id;
           this.tema_actual.nombre = tema_actual[i].nombre;
           this.tema_actual.imagen_tema = tema_actual[i].imagen_tema;
-          this.v_nombre_tema_actual = this.tema_actual.nombre;
+          this.v_bkgr_color = tema_actual[i].color;
+
           // Para poder mostrar el tema y artista por separado
+          this.v_nombre_tema_actual = this.tema_actual.nombre;
           var nombre_tema = this.v_nombre_tema_actual.split("-", 2);
           this.v_nombre_ta = nombre_tema[0]
           this.v_artista_ta = nombre_tema[1]
           console.log(this.v_nombre_ta);
           console.log(this.v_artista_ta);
+          
+          let elm = <HTMLElement>document.querySelector(".app");
+          if (this.v_bkgr_color != null){
+            elm.style.background = 'linear-gradient( '+ this.v_bkgr_color +', black)';
+          }else{
+            elm.style.background = 'linear-gradient( #5C645A, #1C201D, black);';
+          }
+
+          console.log('color de fondo:');
+          console.log('linear-gradient( '+ this.v_bkgr_color +', #1C201D, black)');
+          elm.style.background = 'linear-gradient( '+ this.v_bkgr_color +' black)';
+
           if(this.tema_actual.imagen_tema == undefined || this.tema_actual.imagen_tema.trim() == "")
             this.v_tema_actual_src = "images/tema-default.png";
           else

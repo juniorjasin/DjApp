@@ -11,7 +11,8 @@ import {
 @Injectable()
 export class bolicheService {
 
-  domain = 'http://54.86.110.165:9090';
+  // domain = 'http://54.86.110.165:9090';
+  domain = 'http://localhost:9090';
 
 	constructor(public http: Http){}
 

@@ -217,7 +217,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var temaService = (function () {
     function temaService(http) {
         this.http = http;
-        this.domain = 'http://54.86.110.165:9090';
+        // domain = 'http://54.86.110.165:9090';
+        this.domain = 'http://localhost:9090';
     }
     temaService.prototype.getTemasPropuestos = function (id_boliche, location) {
         var _this = this;
@@ -232,8 +233,19 @@ var temaService = (function () {
         var options = new __WEBPACK_IMPORTED_MODULE_0__angular_http__["d" /* RequestOptions */]({ headers: headers });
         return this.http.get(encodedPath, options).map(function (response) { return _this.mapTemasPropuestos(response.json()); });
     };
+    temaService.prototype.mapTemasPropuestos = function (data) {
+        var temas = [];
+        for (var i = 0; i < data['temas_propuestos'].length; i++) {
+            temas.push({ id: data['temas_propuestos'][i].id,
+                nombre: data['temas_propuestos'][i].nombre,
+                imagen_tema: undefined,
+                color: undefined }); //Hay que cambiar la API para que la devuelva.
+        }
+        return temas;
+    };
     temaService.prototype.getTemaActual = function (id_boliche, location) {
         var _this = this;
+        console.log("dentro de getTemaActual...");
         if (id_boliche == undefined || location.lat == undefined || location.lon == undefined)
             throw "getTemaActual parámetros sin definir";
         var path = this.domain + '/boliches/' + id_boliche + '/tema_actual';
@@ -243,33 +255,33 @@ var temaService = (function () {
             'X-LON': location.lon
         });
         var options = new __WEBPACK_IMPORTED_MODULE_0__angular_http__["d" /* RequestOptions */]({ headers: headers });
+        console.log("getTemaActual: antes del http GET...");
         return this.http.get(encodedPath, options).map(function (response) { return _this.mapTemaActual(response.json()); });
     };
-    temaService.prototype.mapTemasPropuestos = function (data) {
-        var temas = [];
-        for (var i = 0; i < data['temas_propuestos'].length; i++) {
-            temas.push({ id: data['temas_propuestos'][i].id,
-                nombre: data['temas_propuestos'][i].nombre,
-                imagen_tema: undefined }); //Hay que cambiar la API para que la devuelva.
-        }
-        return temas;
-    };
     temaService.prototype.mapTemaActual = function (data) {
+        console.log("mapTemaActual: recibi de la API:");
+        console.log(data);
+        console.log("color:");
         var tema = [];
+        console.log("mapTemaActual: antes del for...");
         for (var i = 0; i < data['tema_actual'].length; i++) {
             tema.push({ id: data['tema_actual'][i].id,
                 nombre: data['tema_actual'][i].nombre,
-                imagen_tema: data['tema_actual'][i].album_art_url });
+                imagen_tema: data['tema_actual'][i].album_art_url,
+                color: data['tema_actual'][i].color });
+            console.log(data['tema_actual'][i].color);
         }
+        console.log("mapTemaActual: antes del return...");
         return tema;
     };
     return temaService;
 }());
 temaService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["B" /* Injectable */])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]) === "function" && _a || Object])
 ], temaService);
 
+var _a;
 //# sourceMappingURL=tema.service.js.map
 
 /***/ }),
@@ -402,7 +414,7 @@ var HomePage = (function () {
         this.yaVoto = false;
         this.boliche = { id: undefined, latitud: undefined, longitud: undefined, nombre: undefined };
         this.location = { lat: undefined, lon: undefined };
-        this.tema_actual = { id: undefined, nombre: undefined, imagen_tema: undefined };
+        this.tema_actual = { id: undefined, nombre: undefined, imagen_tema: undefined, color: undefined };
         this.loading = this.loadingCtrl.create({
             content: 'Buscando boliche...'
         });
@@ -455,7 +467,9 @@ var HomePage = (function () {
     };
     HomePage.prototype.buscarTemaActual = function () {
         var _this = this;
+        console.log("buscarTemaActual...");
         try {
+            console.log("antes de getTemaActual...");
             this._temaService.getTemaActual(this.boliche.id, this.location).subscribe(function (tema_actual) {
                 for (var i = 0; i < tema_actual.length; i++) {
                     //Si cambia el tema actual, habilitar para votar
@@ -464,13 +478,24 @@ var HomePage = (function () {
                     _this.tema_actual.id = tema_actual[i].id;
                     _this.tema_actual.nombre = tema_actual[i].nombre;
                     _this.tema_actual.imagen_tema = tema_actual[i].imagen_tema;
-                    _this.v_nombre_tema_actual = _this.tema_actual.nombre;
+                    _this.v_bkgr_color = tema_actual[i].color;
                     // Para poder mostrar el tema y artista por separado
+                    _this.v_nombre_tema_actual = _this.tema_actual.nombre;
                     var nombre_tema = _this.v_nombre_tema_actual.split("-", 2);
                     _this.v_nombre_ta = nombre_tema[0];
                     _this.v_artista_ta = nombre_tema[1];
                     console.log(_this.v_nombre_ta);
                     console.log(_this.v_artista_ta);
+                    var elm = document.querySelector(".app");
+                    if (_this.v_bkgr_color != null) {
+                        elm.style.background = 'linear-gradient( ' + _this.v_bkgr_color + ', black)';
+                    }
+                    else {
+                        elm.style.background = 'linear-gradient( #5C645A, #1C201D, black);';
+                    }
+                    console.log('color de fondo:');
+                    console.log('linear-gradient( ' + _this.v_bkgr_color + ', #1C201D, black)');
+                    elm.style.background = 'linear-gradient( ' + _this.v_bkgr_color + ' black)';
                     if (_this.tema_actual.imagen_tema == undefined || _this.tema_actual.imagen_tema.trim() == "")
                         _this.v_tema_actual_src = "images/tema-default.png";
                     else
@@ -538,20 +563,19 @@ __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])("v_artista_ta"),
     __metadata("design:type", Object)
 ], HomePage.prototype, "v_artista_ta", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["E" /* Input */])("v_background_color"),
+    __metadata("design:type", Object)
+], HomePage.prototype, "v_bkgr_color", void 0);
 HomePage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-home',template:/*ion-inline-start:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content scroll="false" class="app">\n\n      <div class="headerBar">\n        <p id="boliche"> {{v_nombre_boliche}} </p>\n      </div>\n      <!-- <hr class="style1"> -->\n      <p id="titulo"> ¿ Te gusta lo que suena ?</p>\n      <!-- <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div> -->\n      <div align="center">\n        <img [src]="v_tema_actual_src" class="album_art">\n      </div>\n      <p id="nombe_tema">{{v_nombre_ta}} </p>\n      <p id="artista">{{v_artista_ta}}</p>\n      \n      <img id="cross" src="images/crosses/cross-3.png" (tap)="enviarVoto(\'not-like\')">\n      <img id="heart" src="images/hearts/heart-green-10.png" (tap)="enviarVoto(\'like\')">\n    \n      <!-- <img id="heart" src="images/crosses/cross-3.png" align="left" style="position: relative; width:35%;" (tap)="enviarVoto(\'not-like\')">\n      <img id="cross" src="images/hearts/heart-green-10.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto(\'like\')">\n     -->\n\n  </ion-content>\n'/*ion-inline-end:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/,
+        selector: 'page-home',template:/*ion-inline-start:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content scroll="false" class="app" bgcolor="#E6E6FA">\n    <!-- v_bkgr_color -->\n      <div class="headerBar">\n        <p id="boliche" > {{v_nombre_boliche}} </p>\n      </div>\n      <!-- <hr class="style1"> -->\n      <p id="titulo"> ¿ Te gusta lo que suena ?</p>\n      <!-- <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div> -->\n      <div align="center">\n        <img [src]="v_tema_actual_src" class="album_art">\n      </div>\n      <p [attr.v_bkgr_color]="addAttribute ? \'\' : null" id="nombe_tema">{{v_nombre_ta}} </p>\n      <p id="artista">{{v_artista_ta}}</p>\n      \n      <img id="cross" src="images/crosses/cross-3.png" (tap)="enviarVoto(\'not-like\')">\n      <img id="heart" src="images/hearts/heart-green-10.png" (tap)="enviarVoto(\'like\')">\n    \n      <!-- <img id="heart" src="images/crosses/cross-3.png" align="left" style="position: relative; width:35%;" (tap)="enviarVoto(\'not-like\')">\n      <img id="cross" src="images/hearts/heart-green-10.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto(\'like\')">\n     -->\n\n  </ion-content>\n'/*ion-inline-end:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/,
         providers: [__WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */], __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */], __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */], __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */], __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]]
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */],
-        __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */],
-        __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */],
-        __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */],
-        __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]) === "function" && _g || Object])
 ], HomePage);
 
+var _a, _b, _c, _d, _e, _f, _g;
 //# sourceMappingURL=home.js.map
 
 /***/ }),
@@ -711,7 +735,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var bolicheService = (function () {
     function bolicheService(http) {
         this.http = http;
-        this.domain = 'http://54.86.110.165:9090';
+        // domain = 'http://54.86.110.165:9090';
+        this.domain = 'http://localhost:9090';
     }
     bolicheService.prototype.getBoliches = function (location) {
         var _this = this;
@@ -735,9 +760,10 @@ var bolicheService = (function () {
 }());
 bolicheService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["B" /* Injectable */])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]) === "function" && _a || Object])
 ], bolicheService);
 
+var _a;
 //# sourceMappingURL=boliche.service.js.map
 
 /***/ }),
