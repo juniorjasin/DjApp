@@ -5,20 +5,17 @@ INSERT INTO temas (nombre, album_art_url)
 VALUES ("Mayores - Becky G Feat. Bad Bunny", "http://akamai-b.cdn.cddbp.net/cds/2.0/cover/4D7C/CF81/1EB8/4D2F_medium_front.jpg?cid=1452299036");
 
 INSERT INTO temas (nombre, album_art_url)
-VALUES ("Mi Gente - J Balvin", "");
-
-INSERT INTO temas (nombre, album_art_url)
-VALUES ("Me Reh�so - Danny Ocean", "http://akamai-b.cdn.cddbp.net/cds/2.0/cover/20A5/1FD0/E756/04C0_medium_front.jpg?cid=1452299036");
+VALUES ("Me Rehúso - Danny Ocean", "http://akamai-b.cdn.cddbp.net/cds/2.0/cover/20A5/1FD0/E756/04C0_medium_front.jpg?cid=1452299036");
 
 INSERT INTO temas (nombre, album_art_url)
 VALUES ("Bailame - Nacho", "http://akamai-b.cdn.cddbp.net/cds/2.0/cover/4ADF/B16A/9BE2/F5E6_medium_front.jpg?cid=1452299036");
 
 INSERT INTO temas (nombre, album_art_url)
-VALUES ("3 A.M.", "http://akamai-b.cdn.cddbp.net/cds/2.0/cover/AD23/7D13/3A9D/5B47_medium_front.jpg?cid=1452299036");
+VALUES ("3 A.M. - Jesse & Joy, Gente de Zona", "http://akamai-b.cdn.cddbp.net/cds/2.0/cover/AD23/7D13/3A9D/5B47_medium_front.jpg?cid=1452299036");
 
 
 INSERT INTO boliches (id, nombre, latitud, longitud, id_tema_actual)
-VALUES (1, "Get Me",  "-31.337332", "-64.256521", null);
+VALUES (1, "Canario Negro",  "-31.337332", "-64.256521", null);
 
 INSERT INTO boliches (id, nombre, latitud, longitud, id_tema_actual)
 VALUES (2, "Cuba INC",  "-32.337332", "-65.256521", null);
@@ -27,11 +24,13 @@ INSERT INTO boliches (id, nombre, latitud, longitud, id_tema_actual)
 VALUES (3, "Felipa",  "-33.337332", "-66.256521", null);
 
 INSERT INTO boliches (id, nombre, latitud, longitud, id_tema_actual)
-VALUES (4, "Jet Lag",  "-34.337332", "-67.256521", null);
+VALUES (4, "Get Me",  "-34.337332", "-67.256521", null);
 
 INSERT INTO boliches (id, nombre, latitud, longitud, id_tema_actual)
 VALUES (5, "Distrikt",  "-35.337332", "-68.256521", null);
 
+INSERT INTO boliches (id, nombre, latitud, longitud, id_tema_actual)
+VALUES (6, "Jet Lag",  "-36.337332", "-69.256521", null);
 
 
 INSERT INTO likes (id_boliche, id_tema, tipo_like)

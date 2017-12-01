@@ -7,9 +7,10 @@ drop table temas;
 
 
 create table if not exists temas (
-    id              integer         not null        AUTO_INCREMENT,
+    id              integer                                                         not null        AUTO_INCREMENT,
     nombre          varchar(100)    CHARACTER SET utf8 COLLATE utf8_general_ci      not null,
     album_art_url   varchar(400)    CHARACTER SET utf8 COLLATE utf8_general_ci      null,
+    color           varchar(20)                                                     null,
     PRIMARY KEY (id)
 );
 
