@@ -1,6 +1,6 @@
 bottle==0.12.13
 colorthief==0.2.1
 olefile==0.44
-Pillow==4.3.0
+Pillow==2.9.0
 PyMySQL==0.7.11
 pyproj==1.9.5.1
