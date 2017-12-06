@@ -10,6 +10,11 @@ import { HomePage } from '../pages/home/home';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { ResultsPage } from '../pages/results/results';
+import { Media } from '@ionic-native/media';
+
+import { File, Entry } from '@ionic-native/file';
+import { MediaCapture, MediaFile, CaptureError, CaptureImageOptions } from '@ionic-native/media-capture';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 
 
 @NgModule({
@@ -34,6 +39,11 @@ import { ResultsPage } from '../pages/results/results';
     StatusBar,
     SplashScreen,
     Geolocation,
+    Media,
+    File,
+    MediaCapture, 
+    FileTransfer,
+    FileTransferObject,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

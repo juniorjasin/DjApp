@@ -2,14 +2,17 @@ import pymysql
 import datetime
 import os
 import logging
-from util import exception
-from pygn import pygn
 import json
 
+from util import exception
+from pygn import pygn
+from recognizer import rec
 
+# Poner esto en variables de entorno
 clientID = '1452299036-F0D031687E6211257A4D81AFB1F7C81E' 
 userID = '26838888848744272-F2E01985C6B9E075B52BAFD7FFCB39E4'
 
+# Esto deberia estar en service.
 import io
 from colorthief import ColorThief
 from urllib2 import urlopen
@@ -196,7 +199,6 @@ class MySqlRepo:
             raise exception.InternalServerError("fallo insertar_tema_actual")
         return result
 
-
     def insertar_like(self,id_boliche,id_tema, tipo_like):
         # print "repo insertar_boliches, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
         result = []
@@ -218,7 +220,7 @@ class MySqlRepo:
 
     def insertar_propuesta(self, id_boliche, id_tema):
 
-        logger.debug("Comienza obtener insertar_propuesta")
+        logger.debug("Comienza insertar_propuesta")
         # print "repo insertar_boliches, nombre = {}, lat = {}, lon={}".format(nombre,lat,lon)
         result = []
         try:
@@ -324,8 +326,10 @@ class MySqlRepo:
     def insertar_tema_propuesto(self,nombre_tema,id_boliche):
         pass
 
-
-
+    def insertar_tema_reconocido(self,id_boliche):
+        reco = rec.Recognicion()
+        result = reco.reconocer_tema("criminal - ozuna")
+        return result
 
 ######### Cambiar a otro archivo (podria ser un archivo de funcs auxiliares)
 def RGBTupleToHexString(rgbTuple):

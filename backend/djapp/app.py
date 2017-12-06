@@ -1,4 +1,5 @@
 from bottle import Bottle, route, run, template, get, post, request, response
+import bottle
 import sys
 import json
 
@@ -8,9 +9,11 @@ from handlers import likes
 from handlers import propuestas
 from handlers import estadisticas
 from handlers import temas_propuestos
+from handlers import recognicion
 from decorators.decorador import my_decorator
 import logging
 app = Bottle()
+bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 # (or whatever you want)
 
 LISTEN_PORT = 9090
 
@@ -37,7 +40,7 @@ def enable_cors():
 
 
 
-# API 6 
+# Insertar un boliche
 @app.route('/boliches', method=['POST', 'OPTIONS'])
 @my_decorator
 def insertar_boliche():
@@ -49,6 +52,7 @@ def insertar_boliche():
         response.headers['Content-Type'] = 'application/json'
         return json.dumps(res)
 
+# Consultar boliche segun posicion 
 @app.route('/boliches', method=['GET', 'OPTIONS'])
 @my_decorator
 def consultar_boliches():
@@ -61,7 +65,7 @@ def consultar_boliches():
         return json.dumps(b)
 
 
-#API 7 Obtener tema actual
+# Obtener tema actual
 @app.route('/boliches/<id_boliche>/tema_actual', method=['GET', 'OPTIONS'])
 @my_decorator
 def consultar_tema_actual(id_boliche):
@@ -77,7 +81,7 @@ def consultar_tema_actual(id_boliche):
         return json.dumps(b)
 
 
-#API 11
+# Insertar el tema actual en un boliche
 @app.route('/boliches/<id_boliche>/tema_actual', method=['POST', 'OPTIONS'])
 @my_decorator
 def insertar_actual(id_boliche):
@@ -92,10 +96,11 @@ def insertar_actual(id_boliche):
         response.headers['Content-Type'] = 'application/json'
         return json.dumps(res)
 
-#API 8 
+# Insertar like/not-like del tema actual en un boliche
 @app.route('/likes', method=['POST', 'OPTIONS'])
 @my_decorator
 def insertar_actual():
+    
     if request.method == 'OPTIONS':
         return 
     else:        
@@ -104,7 +109,7 @@ def insertar_actual():
         response.headers['Content-Type'] = 'application/json'
         return json.dumps(res)
 
-# API 9
+# Obtener los temas propuestos(temas que pueden ser sugeridos), para un boliche
 @app.route('/temas_propuestos/<boliche_id>', method= ['GET', 'OPTIONS'])
 @my_decorator
 def consultar_boliches(boliche_id):
@@ -115,7 +120,7 @@ def consultar_boliches(boliche_id):
         res = handler.get(boliche_id)
         return res
 
-# API 10
+# Insertar el tema proupuesto (surgerido)
 @app.route('/propuesta', method=['POST', 'OPTIONS'])
 @my_decorator
 def guardar_propuesta():
@@ -126,8 +131,12 @@ def guardar_propuesta():
         res = a.post()
         response.headers['Content-Type'] = 'application/json'
         return json.dumps(res)
-
+import logging
 # --------------------------- API DJ --------------------------------------
+
+# Obtiene estadisticas que va a visualizar el dj. 
+# Cantidad de likes/not-like del tema actual y
+# las sugerencias de los usuarios.
 @app.route('/estadisticas/<id_boliche>', method=['GET', 'OPTIONS'])
 @my_decorator
 def guardar_propuesta(id_boliche):
@@ -139,6 +148,17 @@ def guardar_propuesta(id_boliche):
         response.headers['Content-Type'] = 'application/json'
         return json.dumps(res)
 
+# A partir de un audio, reconoce que tema se esta escuchando.
+@app.route('/rec/<id_boliche>', method=['POST', 'OPTIONS'])
+@my_decorator
+def guardar_propuesta(id_boliche):
+    if request.method == 'OPTIONS':
+        return 
+    else:
+        a = recognicion.RecognicionHandler(request)
+        res = a.post(id_boliche)
+        response.headers['Content-Type'] = 'application/json'
+        return json.dumps(res)
 
 
 

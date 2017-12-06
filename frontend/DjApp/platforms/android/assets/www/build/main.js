@@ -215,10 +215,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var temaService = (function () {
-    // domain = 'http://localhost:9090';
     function temaService(http) {
         this.http = http;
-        this.domain = 'http://54.86.110.165:9090';
+        // domain = 'http://54.86.110.165:9090';
+        this.domain = 'http://localhost:9090';
     }
     temaService.prototype.getTemasPropuestos = function (id_boliche, location) {
         var _this = this;
@@ -494,7 +494,7 @@ var HomePage = (function () {
                     }
                     console.log('color de fondo:');
                     console.log('linear-gradient( ' + _this.v_bkgr_color + ', #1C201D, black)');
-                    elm.style.background = 'linear-gradient( ' + _this.v_bkgr_color + ', black)';
+                    elm.style.background = 'linear-gradient( ' + _this.v_bkgr_color + ' black)';
                     if (_this.tema_actual.imagen_tema == undefined || _this.tema_actual.imagen_tema.trim() == "")
                         _this.v_tema_actual_src = "images/tema-default.png";
                     else

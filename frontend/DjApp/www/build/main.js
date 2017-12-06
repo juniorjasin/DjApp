@@ -278,10 +278,9 @@ var temaService = (function () {
 }());
 temaService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["B" /* Injectable */])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]) === "function" && _a || Object])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]])
 ], temaService);
 
-var _a;
 //# sourceMappingURL=tema.service.js.map
 
 /***/ }),
@@ -572,10 +571,15 @@ HomePage = __decorate([
         selector: 'page-home',template:/*ion-inline-start:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/'<ion-header> </ion-header>\n  <ion-content scroll="false" class="app" bgcolor="#E6E6FA">\n    <!-- v_bkgr_color -->\n      <div class="headerBar">\n        <p id="boliche" > {{v_nombre_boliche}} </p>\n      </div>\n      <!-- <hr class="style1"> -->\n      <p id="titulo"> ¿ Te gusta lo que suena ?</p>\n      <!-- <div align="center"><img src="images/4babys.jpg" style="position: relative; width:60%" ></div> -->\n      <div align="center">\n        <img [src]="v_tema_actual_src" class="album_art">\n      </div>\n      <p [attr.v_bkgr_color]="addAttribute ? \'\' : null" id="nombe_tema">{{v_nombre_ta}} </p>\n      <p id="artista">{{v_artista_ta}}</p>\n      \n      <img id="cross" src="images/crosses/cross-3.png" (tap)="enviarVoto(\'not-like\')">\n      <img id="heart" src="images/hearts/heart-green-10.png" (tap)="enviarVoto(\'like\')">\n    \n      <!-- <img id="heart" src="images/crosses/cross-3.png" align="left" style="position: relative; width:35%;" (tap)="enviarVoto(\'not-like\')">\n      <img id="cross" src="images/hearts/heart-green-10.png" align="right" style="position: relative; width:35%" (tap)="enviarVoto(\'like\')">\n     -->\n\n  </ion-content>\n'/*ion-inline-end:"/home/jrjs/work/proyectos/DJ-repair/frontend/DjApp/src/pages/home/home.html"*/,
         providers: [__WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */], __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */], __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */], __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */], __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]) === "function" && _g || Object])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_4__services_boliche_service__["a" /* bolicheService */],
+        __WEBPACK_IMPORTED_MODULE_5__services_location_service__["a" /* locationService */],
+        __WEBPACK_IMPORTED_MODULE_6__services_tema_service__["a" /* temaService */],
+        __WEBPACK_IMPORTED_MODULE_7__services_voto_service__["a" /* votoService */],
+        __WEBPACK_IMPORTED_MODULE_3__services_error_mananger_service__["a" /* errorManangerService */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]])
 ], HomePage);
 
-var _a, _b, _c, _d, _e, _f, _g;
 //# sourceMappingURL=home.js.map
 
 /***/ }),
@@ -733,10 +737,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var bolicheService = (function () {
+    // domain = 'http://localhost:9090';
     function bolicheService(http) {
         this.http = http;
-        // domain = 'http://54.86.110.165:9090';
-        this.domain = 'http://localhost:9090';
+        this.domain = 'http://54.86.110.165:9090';
     }
     bolicheService.prototype.getBoliches = function (location) {
         var _this = this;
@@ -760,10 +764,9 @@ var bolicheService = (function () {
 }());
 bolicheService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["B" /* Injectable */])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]) === "function" && _a || Object])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]])
 ], bolicheService);
 
-var _a;
 //# sourceMappingURL=boliche.service.js.map
 
 /***/ }),

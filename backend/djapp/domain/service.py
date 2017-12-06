@@ -79,3 +79,11 @@ class Service:
     def insertar_tema_propuesto(self,nombre_tema,id_boliche):
         response = self.repo.insertar_tema_propuesto(nombre_tema,id_boliche)
         return response
+
+    def insertar_tema_reconocido(self,id_boliche):
+
+        
+
+
+        response = self.repo.insertar_tema_reconocido(id_boliche)
+        return response

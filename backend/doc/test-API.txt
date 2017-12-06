@@ -1,0 +1,43 @@
+# Consultar boliche segun posicion:
+curl -v -X GET 'http://localhost:9090/boliches?lat=-31.337485&lon=-64.256344' | python -m json.tool
+
+
+
+# Insertar un boliche:
+curl -v -H "Content-Type: application/json" -X POST -d '{"nombre":"labs","latitud":"-31.337332","longitud":"-64.256521"}' 'http://localhost:9090/boliches' | python -m json.tool
+
+
+
+# Obtener tema actual:
+curl -v -H "X-LAT: -31.337485" -H "X-LON: -64.256521" -X GET 'http://localhost:9090/boliches/1/tema_actual' | python -m json.tool
+
+
+
+# Insertar el tema actual en un boliche:
+curl -v -H "Content-Type: application/json" -H "X-LAT: -31.337485" -H "X-LON: -64.256521" -X POST -d '{"nombre_tema":"criminal - ozuna"}'  'http://localhost:9090/boliches/1/tema_actual' | python -m json.tool
+
+
+
+# Insertar like/not-like del tema actual en un boliche:
+curl -v -H "Content-Type: application/json" -H "X-LAT: -31.337485" -H "X-LON: -64.256521" -X POST -d '{"id_tema":1,"id_boliche":1,"tipo_like":"like"}' 'http://localhost:9090/likes’ | python -m json.tool
+
+
+
+# Insertar el tema proupuesto (surgerido):
+curl -v -H "Content-Type: application/json" -H "X-LAT: -31.337485" -H "X-LON: -64.256521" -X POST -d '{"id_tema":1,"id_boliche":1}' 'http://localhost:9090/propuesta' | python -m json.tool
+
+
+
+# Obtener los temas propuestos(temas que pueden ser sugeridos), para un boliche:
+curl -v -H "X-LAT: -31.337485" -H "X-LON: -64.256521" -X GET 'http://localhost:9090/temas_propuestos/1' | python -m json.tool
+
+
+
+# Obtiene estadisticas que va a visualizar el dj de un boliche.
+# Cantidad de likes/not-like del tema actual y
+# las sugerencias de los usuarios.
+curl -v -H "Content-Type: application/json" -H "X-LAT: -31.337485" -H "X-LON: -64.256521" -X GET 'http://localhost:9090/estadisticas/1' | python -m json.tool
+
+
+#
+curl -v -H "Content-Type: application/json" -H "X-LAT: -31.337485" -H "X-LON: -64.256521" -X POST -d '{"audio":""}' 'http://localhost:9090/rec/1' | python -m json.tool

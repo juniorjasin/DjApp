@@ -20,4 +20,4 @@ class PropuestasHandler:
         repo = mysql_repo.MySqlRepo()
         svc = service.Service(repo)
         respuesta = svc.insertar_propuesta(id_boliche, id_tema)
-        return { "status":respuesta }
+        return {"status":respuesta }
