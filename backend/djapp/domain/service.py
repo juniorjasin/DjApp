@@ -80,10 +80,26 @@ class Service:
         response = self.repo.insertar_tema_propuesto(nombre_tema,id_boliche)
         return response
 
-    def insertar_tema_reconocido(self,id_boliche):
+    def insertar_tema_reconocido(self,id_boliche, tema_actual):
+        # parseo el json tema_actual y saco lo que se va a insertar
 
-        
+
+        json_ta = json.loads(tema_actual)
+
+        logger.debug("nombre tema: {}".format (json_ta["metadata"]["music"][0]["title"]))
+        logger.debug("nombres artistas: {}".format (json_ta["metadata"]["music"][0]["artists"]))
+
+        nombre_tema = json_ta["metadata"]["music"][0]["title"]
+        artistas = json_ta["metadata"]["music"][0]["artists"]
+
+        # solucion chomasa para cuando hay mas de un artista en el tema
+        artists_names = ""
+        for ar in artistas:
+            artists_names += ar["name"] + " & "
+
+        artists_names = artists_names[:len(artists_names) - 2]
+        logger.debug("nombres artists_names: {}".format (artists_names))
 
 
-        response = self.repo.insertar_tema_reconocido(id_boliche)
+        response = self.repo.insertar_tema_reconocido(id_boliche, nombre_tema, artists_names)
         return response

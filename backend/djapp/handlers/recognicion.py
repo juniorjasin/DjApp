@@ -26,9 +26,8 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-
-
-
+filename = 'new.mp3'
+# filename = 'Martin Garrix  Dua Lipa - Scared To Be Lonely (Official Video).mp3'
 
 
 class RecognicionHandler:
@@ -38,38 +37,19 @@ class RecognicionHandler:
 
     @check_authorization
     def post(self, id_boliche):
-        result = []
-        data = self.request.json
-        # print data
-        logger.debug("DATA:")
-        # logger.debug(data)
-
-        audio = data["audio"]
-        logger.debug("AUDIO:")
-        # logger.debug(audio)
-        result = []
-
-        imagen = open('prueba.flac','wb')
-        imagen.write(audio.encode('utf-16be'))
-        imagen.close()
-
         
-        #data = self.request.json
-        # logger.debug("audiosegement:" + AudioSegment.converter)
+        respuesta = []
 
-        
-        # try:
-        # subprocess.call(['ffmpeg', '-analyzeduration', '2147483647', '-probesize', '2147483647', '-i', 'file1.flac', 'file99.flac'])
+        # NO VA A FUNCIONAR HASTA QUE NO LE MANDE UN TEMA REAL
+        song = AudioSegment.from_file(io.BytesIO(self.request.body.read()), format="mp3")
+        song.export(filename, format="mp3")
 
-        #data = open('file99.flac', 'rb').read()
-        # song = AudioSegment.from_file(io.BytesIO(data), format="flac")
+        # podria verificar si se creo el archivo de alguna forma.
 
-
-        # ffmpeg -analyzeduration 2147483647 -probesize 2147483647 -i file1.flac file99.flac
-
-    
+        reco = rec.Recognicion()
+        tema_actual = reco.reconocer_tema(filename)
 
         repo = mysql_repo.MySqlRepo()
         svc = service.Service(repo)
-        respuesta = svc.insertar_tema_reconocido(id_boliche)
+        respuesta = svc.insertar_tema_reconocido(id_boliche, tema_actual)
         return {"status": respuesta}

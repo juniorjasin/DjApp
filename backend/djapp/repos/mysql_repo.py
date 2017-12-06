@@ -127,65 +127,39 @@ class MySqlRepo:
         logger.debug("return tema: {}".format(tema))
         return tema
 
-    def insertar_tema_actual(self,id_boliche, nombre_tema):
-        global userID
-        global clientID
-
+    def insertar_tema_actual(self,id_boliche, nombre_tema, album_art_url, hexDominantColor):
+       
         result = []
         
         autor_nombre = nombre_tema.split('-')
         # Si no le pongo la codificacion se rompe
-        logger.debug("Buscar:" + (autor_nombre[0] + autor_nombre[1]).encode('ISO-8859-1').strip())
+        logger.debug("Buscar:" + (autor_nombre[0] + " - " + autor_nombre[1]).encode('ISO-8859-1').strip())
 
-        metadata = pygn.search(clientID=clientID, userID=userID, artist=autor_nombre[1], track=autor_nombre[0])
-        if metadata.get('ERROR',None):
-            logger.error("No se pudo buscar el tema en API gracenote, se intenta renovar el UseID")
-            userID = pygn.register(clientID)
-            metadata = pygn.search(clientID=clientID, userID=userID, artist=autor_nombre[1], track=autor_nombre[0])
-
-        stringInfo = json.dumps(metadata, sort_keys=True, indent=4)
-        songInfo = json.loads(stringInfo)
 
         try:
-            album_art_url = songInfo["album_art_url"]
-            track_title = songInfo["track_title"]
-            album_artist_name = songInfo["album_artist_name"]
-            nombre_artista = track_title + " - " + album_artist_name
-            logger.debug(("inserto nombre_artista: " + nombre_artista).encode('ISO-8859-1').strip())
-
-            RGBdominantColor = getDominantColor(album_art_url)
-            logger.debug("Color dominante: {}".format(RGBdominantColor))
-            
-            hexDominantColor = None
-
-            if RGBdominantColor:
-                hexDominantColor = RGBTupleToHexString(RGBdominantColor)
-                logger.debug("Numero en hexadecimal: {}".format(hexDominantColor))
-
-
-        except Exception as ex:
-            logger.error("Excepcion in insertar_tema_actual- {}".format(ex))
-            logger.error("Excepcion - No se encontro el tema-autor en el servicio de gracenote")
-            album_art_url  = ""
-            nombre_artista = nombre_tema
-
-        try:
+            logger.debug("query1")
             cursor_1 = self.cnx.cursor()
             query_1 = "SELECT id FROM temas WHERE nombre = %s"
-            cursor_1.execute(query_1,nombre_artista)
+            cursor_1.execute(query_1,autor_nombre[1])
             result_cursor_1 = cursor_1.fetchone()
+            logger.debug("result_cursor_1: {}".format(result_cursor_1))
             cursor_1.close()
             cursor_2 = self.cnx.cursor()
             if result_cursor_1 is None:
+                logger.debug("query2")
                 query_2 = "INSERT INTO temas(nombre, album_art_url, color) values(%s,%s,%s)"
-                values_query_2 = (nombre_artista, album_art_url, hexDominantColor)
+                values_query_2 = (autor_nombre[0], album_art_url, hexDominantColor)
+                logger.debug("values_query_2: {}".format(values_query_2))
                 cursor_2.execute(query_2, values_query_2)
-                id_tema_insertado = cursor_2.lastrowid 
+                id_tema_insertado = cursor_2.lastrowid
+                logger.debug("id_tema_insertado: {}".format(id_tema_insertado)) 
+                logger.debug("query3")
                 query_3 = "INSERT INTO temas_boliches (id_boliche, id_tema) values(%s,%s)"
                 values_query_3 = (id_boliche, id_tema_insertado)
                 cursor_2.execute(query_3, values_query_3)
                 self.cnx.commit()
             else:
+                logger.debug("query4")
                 query_4 = "INSERT INTO temas_boliches (id_boliche, id_tema) values(%s,%s)"
                 id_tema = result_cursor_1[0]
                 values_query_4 = (id_boliche, id_tema)
@@ -326,12 +300,65 @@ class MySqlRepo:
     def insertar_tema_propuesto(self,nombre_tema,id_boliche):
         pass
 
-    def insertar_tema_reconocido(self,id_boliche):
-        reco = rec.Recognicion()
-        result = reco.reconocer_tema("criminal - ozuna")
+    def insertar_tema_reconocido(self,id_boliche, nombre_tema, artists_names):
+        result = []
+        
+        album_art_url = getSongAlbumImage(nombre_tema, artists_names)
+        logger.debug("album_art_url: {}".format(album_art_url))
+        color = getAlbumImageDominantColor(album_art_url)
+        logger.debug("dominant color form album image: {}".format(color))
+
+        tema_artistas = nombre_tema + "-" + artists_names
+        result = self.insertar_tema_actual(id_boliche, tema_artistas, album_art_url, color)
+
         return result
 
 ######### Cambiar a otro archivo (podria ser un archivo de funcs auxiliares)
+
+
+
+def getAlbumImageDominantColor(album_art_url):
+    
+    RGBdominantColor = getDominantColor(album_art_url)
+    logger.debug("Color dominante: {}".format(RGBdominantColor))
+    
+    hexDominantColor = None
+
+    if RGBdominantColor:
+        hexDominantColor = RGBTupleToHexString(RGBdominantColor)
+        logger.debug("Numero en hexadecimal: {}".format(hexDominantColor))
+    
+    return hexDominantColor
+
+def getSongAlbumImage(song_name, artists_names):
+    global userID
+    global clientID
+
+    album_art_url = ""
+
+    metadata = pygn.search(clientID=clientID, userID=userID, artist=artists_names, track=song_name)
+    if metadata.get('ERROR',None):
+        logger.error("No se pudo buscar el tema en API gracenote, se intenta renovar el UseID")
+        userID = pygn.register(clientID)
+        metadata = pygn.search(clientID=clientID, userID=userID, artist=autor_nombre[1], track=autor_nombre[0])
+
+    stringInfo = json.dumps(metadata, sort_keys=True, indent=4)
+    songInfo = json.loads(stringInfo)
+
+    try:
+        album_art_url = songInfo["album_art_url"]
+        
+    except Exception as ex:
+        logger.error("Excepcion in insertar_tema_actual- {}".format(ex))
+        logger.error("Excepcion - No se encontro el tema-autor en el servicio de gracenote")
+        album_art_url  = ""
+        nombre_artista = nombre_tema
+
+    return album_art_url
+
+
+
+
 def RGBTupleToHexString(rgbTuple):
     stringHex = None
     try:

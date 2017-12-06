@@ -34,12 +34,12 @@ class Recognicion:
         print config
         self.re = ACRCloudRecognizer(config)
 
-    def reconocer_tema(self, tema_rec):
+    def reconocer_tema(self, path_file):
         
         # toma la ruta de la imagen
-        data = self.re.recognize_by_file("file1.flac", 0, 10)
+        data = self.re.recognize_by_file(path_file, 0, 10)
         logger.debug("tema encontrado:" + data)
-        return {"tema":tema_rec}
+        return data
 
         # #recognize by file path, and skip 0 seconds from from the beginning of sys.argv[1].
 
