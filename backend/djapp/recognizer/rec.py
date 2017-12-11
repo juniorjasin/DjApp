@@ -38,5 +38,5 @@ class Recognicion:
         
         # toma la ruta de la imagen
         data = self.re.recognize_by_file(path_file, 0, 10)
-        logger.debug("tema encontrado:" + data.encode('ISO-8859-1'))
+        logger.debug("tema encontrado:" + data)
         return data

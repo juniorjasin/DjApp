@@ -53,7 +53,7 @@ export class HomePage {
   loading:Loading;
 
   //Tiempo de grabación del tema actual
-  tiempo_grabacion = 8000;
+  tiempo_grabacion = 12000;
 
   //Intervalo de busqueda del tema actual
   delayBusquedaTemaActual: number = 8000;

@@ -18,6 +18,14 @@ from colorthief import ColorThief
 from urllib2 import urlopen
 
 
+mysql_config = {
+    'host': os.environ['MYSQL_ENDPOINT'],
+    'db': os.environ['MYSQL_DATABASE'],
+    'user': os.environ['MYSQL_USER'],
+    'passwd': os.environ['MYSQL_PASSWORD'],
+    'port': 3306
+    }
+
 logger = logging.getLogger('mysql_repo')
 logger.setLevel(logging.DEBUG)
 logger.propagate = False
@@ -27,16 +35,6 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-
-mysql_config = {
-    'host': os.environ['MYSQL_ENDPOINT'],
-    'db': os.environ['MYSQL_DATABASE'],
-    'user': os.environ['MYSQL_USER'],
-    'passwd': os.environ['MYSQL_PASSWORD'],
-    'port': 3306
-    }
-
-    
 
 class MySqlRepo:
     def __init__(self):
@@ -147,7 +145,7 @@ class MySqlRepo:
             if result_cursor_1 is None:
                 logger.debug("query2")
                 query_2 = "INSERT INTO temas(nombre, album_art_url, color) values(%s,%s,%s)"
-                values_query_2 = (autor_nombre[0] + autor_nombre[1], album_art_url, hexDominantColor)
+                values_query_2 = (autor_nombre[0] +' - '+ autor_nombre[1], album_art_url, hexDominantColor)
                 logger.debug("values_query_2: {}".format(values_query_2))
                 cursor_2.execute(query_2, values_query_2)
                 id_tema_insertado = cursor_2.lastrowid
@@ -307,17 +305,17 @@ class MySqlRepo:
     def insertar_tema_propuesto(self,nombre_tema,id_boliche):
         pass
 
-    def insertar_tema_reconocido(self,id_boliche, nombre_tema, artists_names, album): #
+    def insertar_tema_reconocido(self,id_boliche, nombre_tema, artists_names): #
         result = []
 
         logger.debug("GRACENOTE busco tema:{}".format(nombre_tema))
         logger.debug("GRACENOTE busco artistas:{}".format(artists_names))
-        album_art_url = getSongAlbumImage(nombre_tema, artists_names, album)
+        album_art_url = getSongAlbumImage(nombre_tema, artists_names)
         logger.debug("album_art_url: {}".format(album_art_url))
         color = getAlbumImageDominantColor(album_art_url)
         logger.debug("dominant color form album image: {}".format(color))
 
-        tema_artistas = nombre_tema + " - " + artists_names
+        tema_artistas = nombre_tema + "-" + artists_names
         result = self.insertar_tema_actual(id_boliche, tema_artistas, album_art_url, color)
 
         return result
@@ -337,13 +335,13 @@ def getAlbumImageDominantColor(album_art_url):
     return hexDominantColor
 
 
-def getSongAlbumImage(song_name, artists_names, album): #
+def getSongAlbumImage(song_name, artists_names): #
     global userID
     global clientID
 
     album_art_url = ""
     logger.debug("busco en gracenote: nombre tema:{} artistas:{} ".format(song_name, artists_names))
-    metadata = pygn.search(clientID=clientID, userID=userID, artist=artists_names, album=album, track=song_name)#
+    metadata = pygn.search(clientID=clientID, userID=userID, artist=artists_names, track=song_name)#
     if metadata.get('ERROR',None):
         logger.error("No se pudo buscar el tema en API gracenote, se intenta renovar el UseID")
         userID = pygn.register(clientID)

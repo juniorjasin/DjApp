@@ -10,7 +10,7 @@ image_name="djapp"
 
 commit_id=$(git rev-parse HEAD)
 # version="${commit_id}.${build_number}"
-version="0.0.2.${build_number}"
+version="0.0.1.${build_number}"
 
 image_tag=${registry_user}/${image_name}:${version}
 

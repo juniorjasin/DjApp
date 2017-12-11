@@ -7,8 +7,6 @@
   
       <p>Top sugerencias</p>
       
-      <h6 style="text-align:left">Reconocimiento de musica</h6>
-      
       <ion-toggle [(ngModel)]="toggleCambiarTema" (ngModelChange)="toggleCambiarTemaUpdate($event)" ></ion-toggle>
       <ion-list no-lines>
         <button ion-item *ngFor="let tema of ranking_temas">

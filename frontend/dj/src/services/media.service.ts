@@ -34,6 +34,6 @@ export class mediaService {
 
     releaseGrabacion(){
         this.mediafile.release();
-        this.file.removeFile(this.file.externalRootDirectory,this.nombre_archivo);
+        // this.file.removeFile(this.file.externalRootDirectory,this.nombre_archivo);
     }
 }
