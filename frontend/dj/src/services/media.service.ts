@@ -13,7 +13,7 @@ export class mediaService {
     nombre_archivo: string = 'nix-tema_actual.mp3';
 
 	constructor(private media: Media, private file: File){
-        this.mediafile = this.media.create(this.file.externalDataDirectory + this.nombre_archivo);
+        this.mediafile = this.media.create(this.file.externalRootDirectory + this.nombre_archivo);
     }
 
     getMediaFile(){
@@ -34,5 +34,6 @@ export class mediaService {
 
     releaseGrabacion(){
         this.mediafile.release();
+        this.file.removeFile(this.file.externalRootDirectory,this.nombre_archivo);
     }
 }

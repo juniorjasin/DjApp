@@ -33,7 +33,7 @@ mysql_config = {
     'db': os.environ['MYSQL_DATABASE'],
     'user': os.environ['MYSQL_USER'],
     'passwd': os.environ['MYSQL_PASSWORD'],
-    'port': 3307
+    'port': 3306
     }
     
 
@@ -135,7 +135,6 @@ class MySqlRepo:
         # Si no le pongo la codificacion se rompe
         logger.debug("Buscar:" + (autor_nombre[0] + " - " + autor_nombre[1]).encode('ISO-8859-1').strip())
 
-
         try:
             logger.debug("query1")
             cursor_1 = self.cnx.cursor()
@@ -148,7 +147,7 @@ class MySqlRepo:
             if result_cursor_1 is None:
                 logger.debug("query2")
                 query_2 = "INSERT INTO temas(nombre, album_art_url, color) values(%s,%s,%s)"
-                values_query_2 = (autor_nombre[0], album_art_url, hexDominantColor)
+                values_query_2 = (autor_nombre[0] + autor_nombre[1], album_art_url, hexDominantColor)
                 logger.debug("values_query_2: {}".format(values_query_2))
                 cursor_2.execute(query_2, values_query_2)
                 id_tema_insertado = cursor_2.lastrowid
@@ -218,11 +217,19 @@ class MySqlRepo:
 
         likes_tema_actual = []
         propuestas = []
-        
-        # como hago esto en menos pasos ?
-        ta = self.obtener_tema_actual(id_boliche)
-        tema_actual = ta[0]
-        id_tema_actual = tema_actual["id"]
+        ta = None
+        tema_actual = None
+        id_tema_actual = None
+
+        try:
+            ta = self.obtener_tema_actual(id_boliche)
+            tema_actual = ta[0]
+            id_tema_actual = tema_actual["id"]
+            
+        except expression as ex:
+            logger.error("obtener_estadisticas - No se pudo obtener tema actual:{}".format(ex))
+            return {"tema_actual": likes_tema_actual, "propuestas": propuestas}
+
         logger.debug("obtener_estadisticas: tema_actual: {} en boliche: {}".format(tema_actual["id"], id_boliche))
 
         try:
@@ -300,43 +307,43 @@ class MySqlRepo:
     def insertar_tema_propuesto(self,nombre_tema,id_boliche):
         pass
 
-    def insertar_tema_reconocido(self,id_boliche, nombre_tema, artists_names):
+    def insertar_tema_reconocido(self,id_boliche, nombre_tema, artists_names, album): #
         result = []
-        
-        album_art_url = getSongAlbumImage(nombre_tema, artists_names)
+
+        logger.debug("GRACENOTE busco tema:{}".format(nombre_tema))
+        logger.debug("GRACENOTE busco artistas:{}".format(artists_names))
+        album_art_url = getSongAlbumImage(nombre_tema, artists_names, album)
         logger.debug("album_art_url: {}".format(album_art_url))
         color = getAlbumImageDominantColor(album_art_url)
         logger.debug("dominant color form album image: {}".format(color))
 
-        tema_artistas = nombre_tema + "-" + artists_names
+        tema_artistas = nombre_tema + " - " + artists_names
         result = self.insertar_tema_actual(id_boliche, tema_artistas, album_art_url, color)
 
         return result
 
+
 ######### Cambiar a otro archivo (podria ser un archivo de funcs auxiliares)
 
-
-
 def getAlbumImageDominantColor(album_art_url):
-    
-    RGBdominantColor = getDominantColor(album_art_url)
-    logger.debug("Color dominante: {}".format(RGBdominantColor))
-    
     hexDominantColor = None
-
-    if RGBdominantColor:
-        hexDominantColor = RGBTupleToHexString(RGBdominantColor)
-        logger.debug("Numero en hexadecimal: {}".format(hexDominantColor))
+    try:
+        RGBdominantColor = getDominantColor(album_art_url)
+        logger.debug("Color dominante: {}".format(RGBdominantColor))
+        hexDominantColor = '#%02x%02x%02x' % RGBdominantColor    
+    except expression as ex:
+        logger.debug("Fallo getAlbumImageDominantColor: {}".format(ex))
     
     return hexDominantColor
 
-def getSongAlbumImage(song_name, artists_names):
+
+def getSongAlbumImage(song_name, artists_names, album): #
     global userID
     global clientID
 
     album_art_url = ""
-
-    metadata = pygn.search(clientID=clientID, userID=userID, artist=artists_names, track=song_name)
+    logger.debug("busco en gracenote: nombre tema:{} artistas:{} ".format(song_name, artists_names))
+    metadata = pygn.search(clientID=clientID, userID=userID, artist=artists_names, album=album, track=song_name)#
     if metadata.get('ERROR',None):
         logger.error("No se pudo buscar el tema en API gracenote, se intenta renovar el UseID")
         userID = pygn.register(clientID)
@@ -357,19 +364,6 @@ def getSongAlbumImage(song_name, artists_names):
     return album_art_url
 
 
-
-
-def RGBTupleToHexString(rgbTuple):
-    stringHex = None
-    try:
-        r = rgbTuple[0]
-        g = rgbTuple[1]
-        b = rgbTuple[2]
-        stringHex = "#" + toHex(r) + toHex(g) + toHex(b)
-    except Exception as ex:
-        logger.error("Error in RGBTupleToHexString: {}".format(ex))
-    return stringHex
-
 def getDominantColor(img_url):
     dominantColor = None
     try:
@@ -380,11 +374,3 @@ def getDominantColor(img_url):
     except Exception as ex:
         logger.error("Error in getDominantColor: {}".format(ex))
     return dominantColor
-
-def toHex(number):
-    result = None
-    try:
-        result = hex(number).split('x')[-1]
-    except Exception as ex:
-        logger.error("Error in toHex: {}".format(ex))
-    return result

@@ -81,25 +81,32 @@ class Service:
         return response
 
     def insertar_tema_reconocido(self,id_boliche, tema_actual):
-        # parseo el json tema_actual y saco lo que se va a insertar
 
-
+        response= []
         json_ta = json.loads(tema_actual)
 
-        logger.debug("nombre tema: {}".format (json_ta["metadata"]["music"][0]["title"]))
-        logger.debug("nombres artistas: {}".format (json_ta["metadata"]["music"][0]["artists"]))
 
-        nombre_tema = json_ta["metadata"]["music"][0]["title"]
-        artistas = json_ta["metadata"]["music"][0]["artists"]
+        if json_ta["status"]["msg"] == "Success":
+            logger.debug("SUCCESS: Encontro tema")
+            logger.debug("nombre tema: {}".format (json_ta["metadata"]["music"][0]["title"].encode('ISO-8859-1')))
+            logger.debug("nombres artistas: {}".format (json_ta["metadata"]["music"][0]["artists"]))
+            logger.debug("nombres artistas: {}".format (json_ta["metadata"]["music"][0]["album"]))#
 
-        # solucion chomasa para cuando hay mas de un artista en el tema
-        artists_names = ""
-        for ar in artistas:
-            artists_names += ar["name"] + " & "
+            nombre_tema = json_ta["metadata"]["music"][0]["title"].encode('ISO-8859-1')
+            artistas = json_ta["metadata"]["music"][0]["artists"]
+            album = json_ta["metadata"]["music"][0]["album"][0].encode('ISO-8859-1')#
 
-        artists_names = artists_names[:len(artists_names) - 2]
-        logger.debug("nombres artists_names: {}".format (artists_names))
+            # solucion chomasa para cuando hay mas de un artista en el tema
+            artists_names = ""
+            for ar in artistas:
+                artists_names += ar["name"] + " & "
+
+            artists_names = artists_names[:len(artists_names) - 2]
+            logger.debug("nombres artists_names: {}".format (artists_names))
+            response = self.repo.insertar_tema_reconocido(id_boliche, nombre_tema, artists_names, album) #
+        else:
+            logger.debug("FAIL: No pudo encontrar tema")
+            response = {"code":"500", "title":"FAIL", "detail":"No se pudo detectar el tema del audio"}
 
 
-        response = self.repo.insertar_tema_reconocido(id_boliche, nombre_tema, artists_names)
         return response

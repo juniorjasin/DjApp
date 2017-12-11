@@ -1,32 +1,54 @@
-<ion-header>
-  <ion-navbar color="primary">
-    <ion-title>
-      View Dj
-    </ion-title>
-  </ion-navbar>
-</ion-header>
+<ion-content>
+  
+      <p > Resultados </p>
+      <h1>{{v_tema_actual}}</h1>
+   
+      <canvas #doughnutCanvas></canvas>
+  
+      <p>Top sugerencias</p>
+      
+      <h6 style="text-align:left">Reconocimiento de musica</h6>
+      
+      <ion-toggle [(ngModel)]="toggleCambiarTema" (ngModelChange)="toggleCambiarTemaUpdate($event)" ></ion-toggle>
+      <ion-list no-lines>
+        <button ion-item *ngFor="let tema of ranking_temas">
+          {{ tema.nombre }}
+        </button> 
+      </ion-list>
 
-<ion-content padding>
-  <button ion-button> Start night </button>
-  <br>
+      <!-- <ion-list inset>
+          <button ion-item *ngFor="let item of items" >
+            {{ item }}
+          </button>
+          <ion-item *ngFor="let tema of temas | async"> {{item}}  </ion-item>
+        </ion-list> -->
 
-  <!-- Change Music -->
-  <ion-item>
-    <ion-label floating> Music </ion-label>
-    <ion-input type="text" [(ngModel)]="music"></ion-input>
-  </ion-item>
-  <div padding>
-   <button ion-button color="primary" (click)="uploadFile()">upload</button>
-  </div>
-  <!-- End Change Music -->
+        <!-- <ion-list>
 
-  <br>
-  <button ion-button (tap)="viewResults()"> Results </button>
-  <br>
-<!--   <ion-list inset>
-    <ion-item *ngFor="let tema of temas"> {{tema.nombre}}  </ion-item>
-  </ion-list> -->
-  <button ion-button> Stop Night </button>
-    
+          <ion-item-sliding>
+            <ion-item>
+              <ion-avatar item-start>
+                <img src="https://ionicframework.com/dist/preview-app/www/assets/img/venkman.jpg">
+              </ion-avatar>
 
-</ion-content>
+              <h2>Slimer</h2>
+              <h2 style="text-align:right">2</h2>
+              
+            </ion-item>
+          </ion-item-sliding>
+
+
+          <ion-item-sliding>
+              <ion-item>
+                <ion-avatar item-start>
+                  <img src="https://ionicframework.com/dist/preview-app/www/assets/img/venkman.jpg">
+                </ion-avatar>
+                <h2>SL</h2>
+              </ion-item>
+            </ion-item-sliding>
+
+        </ion-list> -->
+        
+      
+     
+  </ion-content>

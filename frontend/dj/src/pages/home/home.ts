@@ -1,21 +1,18 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import { ResultsPage } from'../results/results';
+import { Component,ViewChild, OnInit, Input } from '@angular/core';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Chart } from 'chart.js';
 import { LoadingController } from 'ionic-angular';
 import { Loading } from 'ionic-angular';
 
-import 'rxjs/add/operator/map';
+//Interfaces
+import { Boliche } from '../../common/Boliche';
+import { Location } from '../../common/Location';
+import { Estadisticas_tema_propuesta } from '../../common/Estadisticas_tema_propuesta';
 
-//Services
-import { 
-  estadisticasTemasService 
-} from '../../services/estadisticasTemas.service';
+//Servicios
 import { 
   temaService 
 } from '../../services/tema.service';
-import { 
-   errorManangerService
-} from '../../services/error.mananger.service';
 import { 
   messagesService
 } from '../../services/messages.service';
@@ -28,20 +25,22 @@ import {
 import { 
   mediaService
 } from '../../services/media.service';
-
-
-//Interfaces
-import { Boliche } from '../../common/Boliche';
-import { Location } from '../../common/Location';
-import { Observable } from 'rxjs/Observable';
-
+import { 
+  estadisticasTemasService 
+} from '../../services/estadisticasTemas.service';
+import { 
+   errorManangerService
+} from '../../services/error.mananger.service';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
-  providers: [estadisticasTemasService, temaService, errorManangerService,messagesService,locationService,bolicheService, mediaService]
+  providers: [estadisticasTemasService, errorManangerService, temaService,messagesService,locationService,bolicheService, mediaService]
 })
 export class HomePage {
+
+  //Vista tema actual
+  @Input("v_tema_actual") v_tema_actual;
 
   boliche: Boliche;
   location: Location;
@@ -56,58 +55,150 @@ export class HomePage {
   //Tiempo de grabación del tema actual
   tiempo_grabacion = 8000;
 
-  constructor(private _bolicheService: bolicheService,
-              private _locationService: locationService,
-              public navCtrl: NavController,
+  //Intervalo de busqueda del tema actual
+  delayBusquedaTemaActual: number = 8000;
+
+  //Estado del toggle button para activar o desactivar grabar y mandar el tema actual
+  toggleCambiarTema : boolean;
+
+  //Cuando se sale de estadísticas, se termina el loop en buscarEstadisticas
+  buscar_estadisticas:boolean = true;
+
+  ranking_temas: Array<Estadisticas_tema_propuesta>;
+
+  delay_buscarEstadisticas:number = 5000;
+
+  @ViewChild('doughnutCanvas') doughnutCanvas;
+  
+  doughnutChart: any;
+  
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              private loadingCtrl: LoadingController,
               private _estadisticasTemasService: estadisticasTemasService,
-              private _temaService: temaService,
               private _errorManangerService: errorManangerService,
+              private _bolicheService: bolicheService,
+              private _locationService: locationService,
+              private _temaService: temaService,
               private _messageService: messagesService,
-              private _mediaService: mediaService,
-              private loadingCtrl: LoadingController) {
-    this.boliche = {id: undefined, latitud: undefined, longitud: undefined ,nombre: undefined};
-    this.location = {lat: undefined, lon: undefined};
-    this.loading = this.loadingCtrl.create({
-      content: 'Buscando boliche...'
-    });
+              private _mediaService: mediaService) {
+                this.boliche = {id: undefined, latitud: undefined, longitud: undefined ,nombre: undefined};
+                this.location = {lat: undefined, lon: undefined};
+                this.loading = this.loadingCtrl.create({
+                  content: 'Buscando boliche...'
+                });
   }
 
+  
+
   ngOnInit() {
-    console.log('ngoninit home');
+    console.log('ngoninit results');
     this.mostrarLoading();
     this.obtenerLocalizacion();
     this.buscarBoliche(); 
+    this.buscarEstadisticas();
   }
 
-  changeMusic(valueinput){
+  buscarEstadisticas(){
+    try{
+      this._estadisticasTemasService.getEstadisticasTemas(this.boliche.id, this.location).subscribe(estadisticas => {
+        console.log('buscarEstadisticas success');
+        console.dir(estadisticas.estadisticas_tema_propuesta);
+        this.loading.dismiss();
+
+        //Estadísticas tema actual
+        this.v_tema_actual = estadisticas.estadisticas_tema_actual.nombre;
+        this.doughnutChart['config']['data']['datasets'][0]['data'][0] = estadisticas.estadisticas_tema_actual.not_like;
+        this.doughnutChart['config']['data']['datasets'][0]['data'][1] = estadisticas.estadisticas_tema_actual.likes;
+        this.doughnutChart.update(0);
+
+        //Ranking propuestas
+        //Ordenar
+        this.ordenarEstadisticas(estadisticas.estadisticas_tema_propuesta);
+
+        this.ranking_temas = estadisticas.estadisticas_tema_propuesta;
+        if(this.buscar_estadisticas)
+          setTimeout(()=>{ this.buscarEstadisticas(); }, this.delay_buscarEstadisticas);
+      },
+      error => this._errorManangerService.threatError(error));
+    }
+    catch(exception){
+      console.log(exception);
+      setTimeout(()=>{ this.buscarEstadisticas(); }, this.delay_buscarEstadisticas);
+    }
+  }
+
+  ionViewWillLeave(){
+    this.buscar_estadisticas = false;
+  }
+
+  ionViewDidLoad() {
+    this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
+      type: 'doughnut',
+      data: {
+        labels: ["No me gusta", " Me gusta "],
+        datasets: [{
+          label: "#",
+          data: [1,1],
+          backgroundColor: [
+            "#FF2D00",
+            "#12d000"
+          ]
+        }]
+      },
+      options: {
+        legend: {
+          labels: {
+            fontColor: 'white',
+            fontSize: 16
+          }
+        }
+      }
+    });
+  }
+
+  private ordenarEstadisticas(estadisticas: Array <Estadisticas_tema_propuesta>){
+    estadisticas.sort(function(tema_1, tema_2){
+        if (tema_1.cantidad < tema_2.cantidad) {
+          return 1;
+        }
+        if (tema_1.cantidad > tema_2.cantidad) {
+          return -1;
+        }
+        return 0;
+      });
+  }
+
+  private mostrarLoading(){
+    this.loading.present();
+  }
+
+  cambiarMusica(){
     this._mediaService.empezarGrabacion();
     window.setTimeout(() => 
     {
       this._mediaService.detenerGrabacion();
       this.location.lat = '-31.337485';
       this.location.lon = '-64.256521';
-      this._temaService.cambiarTemaActual(1,this.location,this._mediaService.getNombreArchivo()).then(
-        result => {
-          console.log('Se mandó correctamente el tema actual => resultado: ' + result);
-          this._messageService.okMessage('Se mandó correctamente el tema actual');
-          this._mediaService.releaseGrabacion();
-        },
-        error => {
-          console.log('Error al mandar el tema actual => error: ' + error);
-          this._messageService.okMessage('Error al mandar el tema actual');
-          this._messageService.okMessage(error);
-          //Hay que ver si hacer release
-          this._mediaService.releaseGrabacion();
-        }
-      );      
+      if(this.toggleCambiarTema){
+        this._temaService.cambiarTemaActual(1,this.location, this._mediaService.getNombreArchivo()).then(
+          result => {
+            console.log('Se mandó correctamente el tema actual => resultado: ' + result);
+            this._messageService.okMessage('Se mandó correctamente el tema actual');
+            this._mediaService.releaseGrabacion();
+            setTimeout(()=>{ this.cambiarMusica(); }, this.delayBusquedaTemaActual);
+          },
+          error => {
+            console.log('Error al mandar el tema actual => error: ' + error);
+            this._messageService.okMessage('Error al mandar el tema actual');
+            this._messageService.okMessage(error);
+            //Hay que ver si hacer release
+            this._mediaService.releaseGrabacion();
+            this.cambiarMusica();
+          }
+        );
+      }      
     }, this.tiempo_grabacion);    
-  }
-
-  viewResults(){
-    this.navCtrl.push(ResultsPage,{
-        boliche: this.boliche,
-        location: this.location
-      });
   }
 
   private obtenerLocalizacion(){
@@ -149,21 +240,17 @@ export class HomePage {
     }
   }
 
-    private mostrarLoading(){
-    this.loading.present();
+  toggleCambiarTemaUpdate(event){
+    console.log('El estado del toggle cambiar tema actual es ' + this.toggleCambiarTema)
+    if(this.toggleCambiarTema){
+      this.cambiarMusica();
+    }
+    else{
+      this._mediaService.detenerGrabacion();
+      this._mediaService.releaseGrabacion();
+    }
   }
+    
+ 
+ 
 }
-
-//Rutas File
-// this._messageService.okMessage('applicationStorageDirectory:'+ this.file.applicationStorageDirectory); /data/user/0/io.ionic.starter
-// this._messageService.okMessage('applicationDirectory:'+ this.file.applicationDirectory);android_asset/
-// this._messageService.okMessage('cacheDirectory:'+ this.file.cacheDirectory); data/user/io.ionic.starter/cache
-// this._messageService.okMessage('documentsDirectory:'+ this.file.documentsDirectory); null
-// this._messageService.okMessage('externalApplicationStorageDirectory:'+ this.file.externalApplicationStorageDirectory); storage/emulated/0/Android/data/io.iomic.starter/
-// this._messageService.okMessage('externalCacheDirectory:'+ this.file.externalCacheDirectory); storage/emulated/0/Android/data/io.iomic.starter/cache
-// this._messageService.okMessage('externalDataDirectory:'+ this.file.externalDataDirectory); storage/emulated/0/Android/data/io.iomic.starter/files
-// this._messageService.okMessage('externalRootDirectory:'+ this.file.externalRootDirectory); storage/emulated/0/
-// this._messageService.okMessage('sharedDirectory:'+ this.file.sharedDirectory); null
-// this._messageService.okMessage('syncedDataDirectory:'+ this.file.syncedDataDirectory); null
-// this._messageService.okMessage('tempDirectory:'+ this.file.tempDirectory); null 
-

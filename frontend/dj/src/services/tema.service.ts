@@ -35,9 +35,9 @@ export class temaService {
         chunkedMode: false,
         mimeType: "audio/mpeg",
         headers: {
-          'Content-Type': 'application/json',
           'X-LAT': location.lat,
-          'X-LON': location.lon
+          'X-LON': location.lon,
+          'Content-Type': 'audio/mpeg'
         }
       }
 

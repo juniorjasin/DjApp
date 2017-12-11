@@ -11,6 +11,21 @@ import { Estadisticas_tema_propuesta } from '../../common/Estadisticas_tema_prop
 
 //Servicios
 import { 
+  temaService 
+} from '../../services/tema.service';
+import { 
+  messagesService
+} from '../../services/messages.service';
+import { 
+   locationService
+} from '../../services/location.service';
+import { 
+   bolicheService
+} from '../../services/boliche.service';
+import { 
+  mediaService
+} from '../../services/media.service';
+import { 
   estadisticasTemasService 
 } from '../../services/estadisticasTemas.service';
 import { 
@@ -21,7 +36,7 @@ import {
 @Component({
   selector: 'page-results',
   templateUrl: 'results.html',
-  providers: [estadisticasTemasService, errorManangerService]
+  providers: [estadisticasTemasService, errorManangerService, temaService,messagesService,locationService,bolicheService, mediaService]
 })
 export class ResultsPage {
 
@@ -30,9 +45,22 @@ export class ResultsPage {
 
   boliche: Boliche;
   location: Location;
+  music:any;
+
+  //Delays
+  delay_buscarBoliche = 2000;
 
   //Loading inicial
   loading:Loading;
+
+  //Tiempo de grabación del tema actual
+  tiempo_grabacion = 8000;
+
+  //Intervalo de busqueda del tema actual
+  delayBusquedaTemaActual: number = 8000;
+
+  //Estado del toggle button para activar o desactivar grabar y mandar el tema actual
+  toggleCambiarTema : boolean;
 
   //Cuando se sale de estadísticas, se termina el loop en buscarEstadisticas
   buscar_estadisticas:boolean = true;
@@ -49,17 +77,26 @@ export class ResultsPage {
               public navParams: NavParams,
               private loadingCtrl: LoadingController,
               private _estadisticasTemasService: estadisticasTemasService,
-              private _errorManangerService: errorManangerService,) {
-    this.boliche  = navParams.get("boliche");
-    this.location  = navParams.get("location");
-    this.loading = this.loadingCtrl.create({
-      content: 'Buscando estadísticas...'
-    });
+              private _errorManangerService: errorManangerService,
+              private _bolicheService: bolicheService,
+              private _locationService: locationService,
+              private _temaService: temaService,
+              private _messageService: messagesService,
+              private _mediaService: mediaService) {
+                this.boliche = {id: undefined, latitud: undefined, longitud: undefined ,nombre: undefined};
+                this.location = {lat: undefined, lon: undefined};
+                this.loading = this.loadingCtrl.create({
+                  content: 'Buscando boliche...'
+                });
   }
+
+  
 
   ngOnInit() {
     console.log('ngoninit results');
     this.mostrarLoading();
+    this.obtenerLocalizacion();
+    this.buscarBoliche(); 
     this.buscarEstadisticas();
   }
 
@@ -129,6 +166,91 @@ export class ResultsPage {
 
   private mostrarLoading(){
     this.loading.present();
+  }
+
+  cambiarMusica(){
+    this._mediaService.empezarGrabacion();
+    window.setTimeout(() => 
+    {
+      this._mediaService.detenerGrabacion();
+      this.location.lat = '-31.337485';
+      this.location.lon = '-64.256521';
+      if(this.toggleCambiarTema){
+        this._temaService.cambiarTemaActual(1,this.location, this._mediaService.getNombreArchivo()).then(
+          result => {
+            console.log('Se mandó correctamente el tema actual => resultado: ' + result);
+            this._messageService.okMessage('Se mandó correctamente el tema actual');
+            this._mediaService.releaseGrabacion();
+            setTimeout(()=>{ this.cambiarMusica(); }, this.delayBusquedaTemaActual);
+          },
+          error => {
+            console.log('Error al mandar el tema actual => error: ' + error);
+            this._messageService.okMessage('Error al mandar el tema actual');
+            this._messageService.okMessage(error);
+            //Hay que ver si hacer release
+            this._mediaService.releaseGrabacion();
+            this.cambiarMusica();
+          }
+        );
+      }      
+    }, this.tiempo_grabacion);    
+  }
+
+  viewResults(){
+    this.navCtrl.push(ResultsPage,{
+        boliche: this.boliche,
+        location: this.location
+      });
+  }
+
+  private obtenerLocalizacion(){
+    this._locationService.getLocation().subscribe(location => {
+        this.location.lat = location.lat;
+        this.location.lon = location.lon;
+        console.log('latitude' + this.location.lat);
+        console.log('longitude' + this.location.lon);
+        //PRUEBA
+        this.location.lat = '-31.337485';
+        this.location.lon = '-64.256521';
+     });
+  }
+
+  private buscarBoliche(){
+    try{
+      this._bolicheService.getBoliches(this.location).subscribe(boliches => {
+        if(boliches.length == 0){
+          console.log('buscarBoliche => no se encontraron boliches');
+          setTimeout(()=>{ this.buscarBoliche(); }, this.delay_buscarBoliche);
+        }
+        else{
+          for (var i = 0; i < boliches.length; i++) {
+            this.boliche.id = boliches[i].id;
+            this.boliche.nombre = boliches[i].nombre;
+            this.boliche.latitud = boliches[i].latitud;
+            this.boliche.longitud = boliches[i].longitud;
+            this.loading.dismiss();
+            console.log('buscarBoliche => boliche encontrado ');
+            console.dir(this.boliche);
+          }
+        }
+      },
+      error => this._errorManangerService.threatError(error));
+    }
+    catch(exception){
+      console.log(exception);
+      setTimeout(()=>{ this.buscarBoliche(); }, this.delay_buscarBoliche);
+    }
+  }
+
+  toggleCambiarTemaUpdate(event){
+    console.log('El estado del toggle cambiar tema actual es ' + this.toggleCambiarTema)
+    if(this.toggleCambiarTema){
+      this.cambiarMusica();
+    }
+    else{
+      this._mediaService.detenerGrabacion();
+      this._mediaService.releaseGrabacion();
+    }
   }
     
  

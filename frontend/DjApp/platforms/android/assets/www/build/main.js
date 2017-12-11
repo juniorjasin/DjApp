@@ -215,10 +215,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var temaService = (function () {
+    // domain = 'http://localhost:9090';
     function temaService(http) {
         this.http = http;
-        // domain = 'http://54.86.110.165:9090';
-        this.domain = 'http://localhost:9090';
+        this.domain = 'http://54.86.110.165:9090';
     }
     temaService.prototype.getTemasPropuestos = function (id_boliche, location) {
         var _this = this;

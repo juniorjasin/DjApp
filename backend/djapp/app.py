@@ -90,11 +90,9 @@ def insertar_actual(id_boliche):
 
     if request.method == 'OPTIONS':
         return 
-    else:
-        handler = tema_actual.TemaActualHandler(request)
-        res = handler.post(id_boliche)
-        response.headers['Content-Type'] = 'application/json'
-        return json.dumps(res)
+    else:        
+        response.status = 400
+        return {"code":"400", "title":"FAIL", "detail":"esta ruta ya no debe ser utiliza... usar /rec/<id_boliche>"}
 
 # Insertar like/not-like del tema actual en un boliche
 @app.route('/likes', method=['POST', 'OPTIONS'])

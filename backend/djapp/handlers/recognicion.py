@@ -6,14 +6,13 @@ from pydub import AudioSegment
 from pydub.utils import which
 from recognizer import rec
 import subprocess
+import datetime
+from subprocess import call
+
 
 AudioSegment.converter = which("ffmpeg")
 
-from pydub.playback import play
 import io
-
-
-import base64
 import logging
 
 logger = logging.getLogger('rec')
@@ -25,10 +24,7 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-
-filename = 'new.mp3'
-# filename = 'Martin Garrix  Dua Lipa - Scared To Be Lonely (Official Video).mp3'
-
+filename = 'AC_DC - Hells Bells.mp3'
 
 class RecognicionHandler:
     def __init__(self,request):        
@@ -38,16 +34,18 @@ class RecognicionHandler:
     @check_authorization
     def post(self, id_boliche):
         
+        global filename
+
         respuesta = []
 
-        # NO VA A FUNCIONAR HASTA QUE NO LE MANDE UN TEMA REAL
-        song = AudioSegment.from_file(io.BytesIO(self.request.body.read()), format="mp3")
-        song.export(filename, format="mp3")
+        fileBoliche = "{}.mp3".format(id_boliche)
+        imagen = open(fileBoliche,'w+')
+        imagen.write(self.request.body.read())
+        imagen.close()
 
         # podria verificar si se creo el archivo de alguna forma.
-
         reco = rec.Recognicion()
-        tema_actual = reco.reconocer_tema(filename)
+        tema_actual = reco.reconocer_tema(fileBoliche)
 
         repo = mysql_repo.MySqlRepo()
         svc = service.Service(repo)
