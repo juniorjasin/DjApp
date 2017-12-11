@@ -35,8 +35,8 @@ mysql_config = {
     'passwd': os.environ['MYSQL_PASSWORD'],
     'port': 3306
     }
-    
 
+    
 
 class MySqlRepo:
     def __init__(self):

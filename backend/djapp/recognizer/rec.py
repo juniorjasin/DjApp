@@ -37,12 +37,6 @@ class Recognicion:
     def reconocer_tema(self, path_file):
         
         # toma la ruta de la imagen
-        data = self.re.recognize_by_file("/home/jrjs/work/proyectos/DJ-repair/backend/Wisin - Vacaciones (Official Video).mp3", 0, 10)
+        data = self.re.recognize_by_file(path_file, 0, 10)
         logger.debug("tema encontrado:" + data.encode('ISO-8859-1'))
         return data
-
-        # #recognize by file path, and skip 0 seconds from from the beginning of sys.argv[1].
-
-        # buf = open(sys.argv[1], 'rb').read()
-        # #recognize by file_audio_buffer that read from file path, and skip 0 seconds from from the beginning of sys.argv[1].
-        # print re.recognize_by_filebuffer(buf, 0, 10)
